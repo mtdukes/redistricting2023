@@ -11,11 +11,11 @@ A collection of resources and notes for the ongoing analysis of North Carolina's
 
 ## Quick reference
 
-For fact checking.
-
 **Blocks:** 236,638
+
 **Population:** 10,439,388
 
+For additional reference information and data dictionaries, see the [technical reference readme](https://github.com/mtdukes/redistricting2023/blob/main/technical_reference.md).
 
 ## Ongoing coverage
 
