@@ -1,5 +1,7 @@
 #Ignore these directories
 data/
+monster/keys/
 
 #ignore these files
 .DS_Store
+.Rproj.user
