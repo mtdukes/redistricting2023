@@ -9,6 +9,7 @@
 library(tidyverse)
 library(tidycensus)
 library(janitor)
+library(ggplot2)
 
 # set api key for tidycensus
 census_api_key(read_lines('keys/census_api', n_max = 1))
@@ -27,11 +28,11 @@ nc_population_block <- get_decennial(geography = "block",
   select(geoid = GEOID, population = value)
 
 # readout check of block totals
-cat('...loaded', nrow(nc_population_block), 'total blocks...',
+cat('...loaded', nrow(nc_population_block), 'total blocks from census data...',
     if_else(nrow(nc_population_block) == 236638, 'CHECK', 'ERROR')
 )
 # readout of population check
-cat('...total population', sum(nc_population_block$population), '...',
+cat('...total population', sum(nc_population_block$population), 'calculated from census data...',
     if_else(sum(nc_population_block$population) == 10439388, 'CHECK', 'ERROR')
 )
 
@@ -44,13 +45,24 @@ duke_crosswalk <- read_csv('../data/block_precinct_vote_crosswalk.csv', col_type
   #fix the ss to sst error for 2012
   rename(g12_sst_d = g12_ss_d, g12_sst_r = g12_ss_r)
 
+# readout of population check
+cat('...total population', sum(duke_crosswalk$pop2020cen), 'calculated from Duke crosswalk data...',
+    if_else(sum(duke_crosswalk$pop2020cen) == 10439388, 'CHECK', 'ERROR')
+)
+
 # Load block assignment files ---------------------------------------------
 
-# 2022
+# 2022 maps (used in election)
 baf_nc_house22 <-read_csv('../data/baf_nc_house_2022.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
 baf_nc_senate22 <-read_csv('../data/baf_nc_senate_2022.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
 
 baf_us_house22 <-read_csv('../data/baf_us_house_2022.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
+
+# 2021 maps (overturned)
+baf_nc_house21 <-read_csv('../data/baf_nc_house_2021.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
+baf_nc_senate21 <-read_csv('../data/baf_nc_senate_2021.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
+
+baf_us_house21 <-read_csv('../data/baf_us_house_2021.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
 
 # Function definitions ----------------------------------------------------
 
@@ -137,5 +149,273 @@ genElectionTables <- function(baf, chamber, contest_list){
 
 }
 
+#function to tally up number of dems elected across ensemble
+#uses path to raw distribution files downloaded from duke team:
+#https://git.math.duke.edu/gitlab/gjh/redistricting2020results/-/tree/main/NC/Ensembles
+#also accepts upper and lower boundaries to construct table
+#usage:
+#
+#genHistogramData('../data/ensembles/house/mcd_off/statewide_G20_PR.csv', 45, 65)
+genHistogramData <- function(raw_file_path, hist_start, hist_end){
+  #generate a single-column dataframe using provided boundaries
+  data.frame(dems_elected = c(hist_start:hist_end)) %>% 
+    #join with the raw distribution file after processing
+    left_join(
+      #read in file
+      read_csv(raw_file_path, show_col_types = FALSE) %>%
+        #calculate the number of dems elected by counting vote totals above 50%
+        mutate(dems_elected = rowSums(. > 0.5)) %>% 
+        select(dems_elected) %>%
+        #group by the number of dems elected to get the distribution across all maps
+        count(dems_elected, name = 'map_count'),
+      by = 'dems_elected'
+    ) %>%
+    #replace any nulls with zero
+    replace_na(list(map_count = 0) ) %>%
+    #reformat the percentages
+    mutate(hist_pct = round(map_count/100000 * 100, 1) )
+}
+
+#function to produce a histogram using duke ensemble performance data
+#and performance of a given map proposal. accepts a two-digit year,
+#a race, and a preloaded block assignment file.
+#
+#syntax:
+#genHistogramChart('g20_pr', 'us_house', '../data/ensembles/congressional/atlas_measureID12_marginals_G20_PR.csv', baf_us_house22)
+genHistogramChart <- function(race_code, chamber, raw_file_path, baf, mcd = 1){
+  
+  #set the mcd status, default is on
+  mcd_status <- ifelse(mcd == 1, 'on', 'off')
+  
+  hist_start <- case_when(
+    chamber == 'nc_house' ~ 35,
+    chamber == 'nc_senate' ~ 10,
+    chamber == 'us_house' ~ 0,
+    .default = NA
+  )
+  hist_end <- case_when(
+    chamber == 'nc_house' ~ 75,
+    chamber == 'nc_senate' ~ 35,
+    chamber == 'us_house' ~ 14,
+    .default = NA
+  )
+  #check for valid entry
+  if(is.na(hist_start) | is.na(hist_end)){
+    cat('X...Error: invalid chamber_code entered')
+    break
+  }
+  
+  seat_count <- baf %>%
+    genMapResult(chamber, race_code) %>%
+    summarize(seats = sum(party_win == 'D')) %>%
+    pull(seats)
+  
+  #generate the source data
+  genHistogramData(raw_file_path, hist_start, hist_end) %>% {
+    #base plot data
+    ggplot(., aes(dems_elected,
+                  hist_pct,
+                  yend = 60,
+                  fill = ifelse( hist_pct == max(hist_pct), 'highlight', 'normal') )
+    ) +
+      geom_col() +
+      #set annotation of mode value with a curved arrow
+      annotate(
+        geom = "curve",
+        x = .[which(.$hist_pct == max(.$hist_pct)), "dems_elected"] + 5,
+        y = max(.$hist_pct) + 10,
+        xend = .[which(.$hist_pct == max(.$hist_pct)), "dems_elected"],
+        yend = max(.$hist_pct) + 0.5, 
+        curvature = .3, arrow = arrow(length = unit(2, "mm"))
+      ) +
+      #set annotation of mode value with label text
+      annotate(geom = "text",
+               x = .[which(.$hist_pct == max(.$hist_pct)), "dems_elected"] + 5.25,
+               y = max(.$hist_pct) + 10,
+               label = "most common result\nacross 100,000 maps",
+               lineheight = 0.9,
+               hjust = "left"
+      ) +
+      #generate point showing map proposal value for comparison
+      geom_point( aes(x = seat_count,
+                      y = 1),
+                  color = '#fc8d62',
+                  size = 3
+      ) +
+      #set annotation of proposal value with curved arrow
+      annotate(
+        geom = "curve",
+        x = seat_count - 5,
+        y = 9,
+        xend = seat_count - 0.2,
+        yend = 2.5, 
+        curvature = -0.3, arrow = arrow(length = unit(2, "mm"))
+      ) +
+      #set annotation of proposal value with label text
+      annotate(geom = "text",
+               x = seat_count - 5.25,
+               y = 9,
+               label = "how this map\nperformed",
+               lineheight = 0.9,
+               hjust = "right"
+      ) +
+      #color the bars
+      scale_fill_manual(values=c('gray40', 'gray80')) +
+      #customize the breaks on the x axis
+      scale_x_continuous(breaks = seq(from = hist_start, to = hist_end, by = 5),
+                         minor_breaks = seq(from = hist_start, to = hist_end, by = 1)
+      ) +
+      #customize the y axis
+      scale_y_continuous(breaks = seq(from = 0, to = 60, by = 10)) +
+      #add labels based on inputs
+      labs(
+        x = '# OF DEMOCRATS ELECTED', y = '% OF MAPS WITH RESULT',
+        title = paste0('How the maps performed: ', chamber),
+        subtitle = paste0(toupper(race_code), ', MCD ', toupper(mcd_status)),
+        caption = 'SOURCE: Duke Quantifying Gerrymandering team, N&O analysis'
+      ) +
+      theme_minimal() +
+      theme(legend.position = "none")
+  }
+}
+
+# Test functions ----------------------------------------------------------
+
 election_tables <- baf_us_house22 %>% 
   genElectionTables('us_house', c('g20_pr', 'g16_pr', 'g12_pr', 'g08_pr'))
+
+#readout of vote check
+for(row in 1:nrow(election_tables)){
+  cat('...Dem votes for', election_tables[row, 'race_code'][[1]], election_tables[row, 'total_dem_votes'][[1]], 
+      'calculated from imputed maps...',
+      if_else(election_tables[row, 'total_dem_votes'][[1]] == sum(duke_crosswalk[[paste0(election_tables[row, 'race_code'][[1]], '_d')]]), 
+              'CHECK', 'ERROR'),
+      '\n'
+  )
+  
+  cat('...Dem + Rep votes for', election_tables[row, 'race_code'][[1]], election_tables[row, 'total_dr_votes'][[1]], 
+      'calculated from imputed maps...',
+      if_else(election_tables[row, 'total_dr_votes'][[1]] == sum(duke_crosswalk[[paste0(election_tables[row, 'race_code'][[1]], '_d')]]) + sum(duke_crosswalk[[paste0(election_tables[row, 'race_code'][[1]], '_r')]]), 
+              'CHECK', 'ERROR'),
+      '\n'
+  )
+}
+
+baf_us_house22 %>% 
+  genElectionTables('us_house', c('g20_pr', 'g16_pr', 'g12_pr', 'g08_pr')) %>% 
+  arrange(dem_pct)
+
+baf_us_house21 %>% 
+  genElectionTables('us_house', c('g12_gv', 'g20_ca', 'g16_lg', 'g16_uss', 'g20_tr', 'g16_pr',
+                                  'g20_lg', 'g12_pr', 'g20_pr', 'g20_ag', 'g20_ad', 'g20_sst', 
+                                  'g12_ci', 'g20_gv', 'g12_sst', 'g08_uss')) %>% 
+  arrange(dem_pct)
+
+baf_nc_house22 %>% 
+  genElectionTables('nc_house', c('g20_pr', 'g16_pr', 'g12_pr', 'g08_pr')) %>% 
+  arrange(dem_pct)
+
+baf_nc_house21 %>% 
+  genElectionTables('nc_house', c('g20_pr', 'g16_pr', 'g12_pr', 'g08_pr')) %>% 
+  arrange(dem_pct)
+
+genHistogramData('../data/ensembles/congressional/atlas_measureID12_marginals_G20_PR.csv', 1, 14)
+
+genHistogramData('../data/ensembles/congressional/atlas_measureID12_marginals_G20_PR.csv', 1, 14)
+
+genHistogramChart('g20_pr', 'us_house', 
+                  '../data/ensembles/congressional/atlas_measureID12_marginals_G20_PR.csv', baf_us_house22)
+
+baf_nc_house21 %>% 
+  genElectionTables('us_house', c('g12_gv', 'g20_ca', 'g16_lg', 'g16_uss', 'g20_tr', 'g16_pr',
+                                  'g20_lg', 'g12_pr', 'g20_pr', 'g20_ag', 'g20_ad', 'g20_sst', 
+                                  'g12_ci', 'g20_gv', 'g12_sst', 'g08_uss')) %>% 
+  arrange(dem_pct)
+
+# g12_gv  g16_pr g20_pr g20_gv g08_uss
+genHistogramChart('g12_gv', 'nc_house', 
+                  '../data/ensembles/house/mcd_on/statewide_G12_GV.csv', baf_nc_house21)
+
+genHistogramChart('g16_pr', 'nc_house', 
+                  '../data/ensembles/house/mcd_on/statewide_G16_PR.csv', baf_nc_house21)
+
+genHistogramChart('g20_pr', 'nc_house', 
+                  '../data/ensembles/house/mcd_on/statewide_G20_PR.csv', baf_nc_house21)
+
+genHistogramChart('g20_gv', 'nc_house', 
+                  '../data/ensembles/house/mcd_on/statewide_G20_GV.csv', baf_nc_house21)
+
+genHistogramChart('g08_uss', 'nc_house', 
+                  '../data/ensembles/house/mcd_on/statewide_G08_USS.csv', baf_nc_house21)
+
+
+# Generate results of original and remedial maps --------------------------
+
+#store all contests for ease of use
+all_contests <- c('g08_pr', 'g08_uss', 'g08_gv', 'g08_lg', 'g08_ag', 'g08_ad', 'g08_ca', 'g08_ci', 'g08_cl', 
+                  'g10_uss',
+                  'g12_pr', 'g12_gv', 'g12_lg', 'g12_sst', 'g12_ci',  
+                  'g14_uss',
+                  'g16_pr', 'g16_gv', 'g16_lg', 'g16_uss', 'g16_ag',
+                  'g20_pr', 'g20_uss', 'g20_gv', 'g20_lg', 'g20_ag', 'g20_ca', 'g20_tr', 'g20_ad', 'g20_sst', 'g20_ci', 'g20_cl'
+)
+
+#nc house
+nc_house_results <- baf_nc_house21 %>% 
+  genElectionTables('nc_house', all_contests) %>% 
+  mutate(dems_original = seats) %>% 
+  left_join(
+    baf_nc_house22 %>% 
+      genElectionTables('nc_house', all_contests) %>% 
+      select(race_code, dems_remedial = seats),
+    by = 'race_code'
+  ) %>% 
+  arrange(dem_pct) %>% 
+  mutate(Difference = dems_remedial - dems_original)
+
+#nc senate
+nc_senate_results <- baf_nc_senate21 %>% 
+  genElectionTables('nc_senate', all_contests) %>% 
+  mutate(dems_original = seats) %>% 
+  left_join(
+    baf_nc_senate22 %>% 
+      genElectionTables('nc_senate', all_contests) %>% 
+      select(race_code, dems_remedial = seats),
+    by = 'race_code'
+  ) %>% 
+  arrange(dem_pct) %>% 
+  mutate(Difference = dems_remedial - dems_original)
+
+#us house/congress
+us_house_results <- baf_us_house21 %>% 
+  genElectionTables('us_house', all_contests) %>% 
+  mutate(dems_original = seats) %>% 
+  left_join(
+    baf_us_house22 %>% 
+      genElectionTables('us_house', all_contests) %>% 
+      select(race_code, dems_remedial = seats),
+    by = 'race_code'
+  ) %>% 
+  arrange(dem_pct) %>% 
+  mutate(Difference = dems_remedial - dems_original)
+
+#clean up the results for posting to GitHub
+nc_house_results %>% 
+  select('Contest and year' = race_code, 'Statewide D vote %' = dem_pct,
+         'D seats, original map' = dems_original, 'D seats, final map' = dems_remedial, Difference) %>% 
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+nc_senate_results %>% 
+  select('Contest and year' = race_code, 'Statewide D vote %' = dem_pct,
+         'D seats, original map' = dems_original, 'D seats, final map' = dems_remedial, Difference) %>% 
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+us_house_results %>% 
+  select('Contest and year' = race_code, 'Statewide D vote %' = dem_pct,
+         'D seats, original map' = dems_original, 'D seats, final map' = dems_remedial, Difference) %>% 
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+

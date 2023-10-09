@@ -98,7 +98,15 @@ North Carolina House district plan. Enacted by the NC General Assembly on Februa
 
 *Filename: baf_nc_house_2022.csv*
 
-*Source: [N.C. Generaly Assembly](https://ncleg.gov/Files/GIS/Plans_Main/House_2022/SL%202022-4%20House%20-%20Block%20Assignment%20File.zip)*
+*Source: [N.C. General Assembly](https://ncleg.gov/Files/GIS/Plans_Main/House_2022/SL%202022-4%20House%20-%20Block%20Assignment%20File.zip)*
+
+### Block assignment file, NC House 2021
+
+North Carolina House district plan. Enacted by the NC General Assembly on November 4, 2021 as [House Bill 976](https://www.ncleg.gov/BillLookUp/2021/H976), becoming Session Law 2021-175.
+
+*Filename: baf_nc_house_2021.csv*
+
+*Source: [N.C. General Assembly](https://www.ncleg.gov/Files/GIS/Plans_Main/House_2021/SL%202021-175%20House%20-%20Block%20Assignment%20File.zip)*
 
 ### Block assignment file, NC Senate 2022
 
@@ -108,6 +116,14 @@ North Carolina Senate district plan. Enacted by the NC General Assembly on Febru
 
 *Source: [N.C. General Assembly](https://ncleg.gov/Files/GIS/Plans_Main/Senate_2022/SL%202022-2%20Senate%20-%20Block%20Assignment%20File.zip)*
 
+### Block assignment file, NC Senate 2021
+
+North Carolina Senate district plan. Enacted by the NC General Assembly on November 4, 2021 as [Senate Bill 739](https://www.ncleg.gov/BillLookUp/2021/S739), becoming Session Law 2021-173.
+
+*Filename: baf_nc_senate_2021.csv*
+
+*Source: [N.C. General Assembly](https://www.ncleg.gov/Files/GIS/Plans_Main/Senate_2021/SL%202021-173%20Senate%20-%20Block%20Assignment%20File.zip)*
+
 ### Block assignment file, US House 2022
 
 North Carolina US Congressional district plan ordered by the NC Courts on February 23, 2022 in Harper v. Hall, File No. 21 CVS 015426, Wake County Superior Court. 
@@ -115,3 +131,11 @@ North Carolina US Congressional district plan ordered by the NC Courts on Februa
 *Filename: baf_us_house_2022.csv*
 
 *Source: [N.C. General Assembly](https://ncleg.gov/Files/GIS/Plans_Main/Congress_2022_Court/2022%20Interim%20Congressional%20-%20Block%20Assignment%20File.zip)*
+
+### Block assignment file, US House 2021
+
+North Carolina congressional district plan. Enacted by the NC General Assembly on November 4, 2021 as [Senate Bill 740](https://www.ncleg.gov/BillLookUp/2021/S740), becoming Session Law 2021-174. District boundaries are based on 2020 census tabulation blocks.
+
+*Filename: baf_us_house_2021.csv*
+
+*Source: [N.C. General Assembly](https://www.ncleg.gov/Files/GIS/Plans_Main/Congress_2021/SL%202021-174%20Congress%20-%20Block%20Assignment%20File.zip)*
