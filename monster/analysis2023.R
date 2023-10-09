@@ -39,7 +39,103 @@ cat('...total population', sum(nc_population_block$population), '...',
 
 # The crosswalk file created by the Duke University team contains the vote breakdown
 # for multiple statewide races by block, based on precinct level election results
-duke_crosswalk <- read_csv('../data/block_precinct_vote_crosswalk.csv') %>%
+duke_crosswalk <- read_csv('../data/block_precinct_vote_crosswalk.csv', col_types = cols(geoID = 'c')) %>%
   clean_names('snake') %>% 
   #fix the ss to sst error for 2012
   rename(g12_sst_d = g12_ss_d, g12_sst_r = g12_ss_r)
+
+# Load block assignment files ---------------------------------------------
+
+# 2022
+baf_nc_house22 <-read_csv('../data/baf_nc_house_2022.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
+baf_nc_senate22 <-read_csv('../data/baf_nc_senate_2022.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
+
+baf_us_house22 <-read_csv('../data/baf_us_house_2022.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
+
+# Function definitions ----------------------------------------------------
+
+#function to generate a table of election results for a given map using
+#a provided block assignment file, year and race
+#usage
+#
+#baf_nc_house22 %>% genMapResult('nc_house', 'g20_pr')
+genMapResult <- function(baf, chamber, race_code){
+  
+  #get the ideal population for given chamber
+  ideal_pop <- case_when(
+    chamber == 'nc_house'~ 10439388/120,
+    chamber == 'nc_senate' ~ 10439388/50,
+    chamber == 'us_house' ~ 10439388/14,
+    .default = 0
+  )
+  #check for valid entry
+  if(ideal_pop == 0){
+    cat('X...Error: invalid chamber_code entered')
+    break
+  }
+  
+  #narrow down the elections table to the specific race and year
+  election_table <- duke_crosswalk %>% 
+    select(geo_id, pop2020cen, 
+           imputed_votes_dem = paste0(race_code,'_d'),
+           imputed_votes_rep = paste0(race_code, '_r'),
+           bvap2020cen = bvap2020ce,
+           vap2020cen) %>% 
+    mutate(imputed_votes_total = imputed_votes_dem + imputed_votes_rep, .after = imputed_votes_rep)
+  
+  baf %>% 
+    left_join(election_table, by = c('block' = 'geo_id')) %>% 
+    group_by(district) %>% 
+    summarize(population = sum(pop2020cen),
+              pop_dev = sum(pop2020cen) - ideal_pop,
+              pop_dev_pct = round( ((sum(pop2020cen) - ideal_pop) / ideal_pop) * 100, 2),
+              bvap_pct = round( sum(bvap2020cen) / sum(vap2020cen) * 100, 1) ,
+              dem_votes = sum(imputed_votes_dem),
+              total_votes = sum(imputed_votes_total),
+              dem_pct = round( sum(imputed_votes_dem) / (sum(imputed_votes_dem) + sum(imputed_votes_rep) ) * 100 , 1 ),
+              party_win = ifelse(sum(imputed_votes_dem) > sum(imputed_votes_rep), 'D', 'R') )
+}
+
+#function to generate election tables for an entire list of contests
+#showing number of democrats elected
+#
+#usage
+#baf_nc_house22 %>% genElectionTables('nc_house', c('g20_pr', 'g16_pr', 'g12_pr', 'g08_pr'))
+genElectionTables <- function(baf, chamber, contest_list){
+
+  #initialize an empty ist
+  data_list = list()
+  
+  #loop through the list of contests
+  for (i in contest_list){
+    race_code = i
+    #get the map result for the given contest
+    map_result <- baf %>%
+      genMapResult(chamber, race_code)
+    
+    #tally up the seats total vote percentages
+    map_summary <- map_result %>%
+      summarize(
+       seats = sum(party_win == 'D'),
+       total_dem_votes = sum(dem_votes),
+       total_dr_votes = sum(total_votes)
+      ) %>% 
+      mutate(dem_pct = round(total_dem_votes/total_dr_votes * 100, 2)) %>% 
+      mutate(race_code = race_code, .before = everything())
+    
+    #assign the contest to a list
+    data_list[[race_code]] <- map_summary
+    
+  }
+  
+  #collapse the list of contest results to a single dataframe
+  election_tables <- data_list %>% 
+    bind_rows()
+  
+  #return the total list of contests
+  return(election_tables)
+
+}
+
+election_tables <- baf_us_house22 %>% 
+  genElectionTables('us_house', c('g20_pr', 'g16_pr', 'g12_pr', 'g08_pr'))

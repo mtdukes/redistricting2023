@@ -2,7 +2,11 @@
 
 # Duke precinct vote to block crosswalk
 
-The crosswalk file created by the Duke University team contains the vote breakdown for multiple statewide races by block, based on precinct level election results
+The crosswalk file created by the Duke University team contains the vote breakdown for multiple statewide races by block, based on precinct level election results.
+
+*Filename: block_precinct_vote_crosswalk.csv*
+
+*Source: Duke Quantifying Gerrymandering Team*
 
 | field | description | notes
 |--|--|--|
@@ -79,3 +83,35 @@ The crosswalk file created by the Duke University team contains the vote breakdo
 |g12_ci_r| 2012 labor commissioner, Rep votes | |
 |vap2020cen| Voting age population, 2020 census | |
 |bvap2020ce| Black voting-age population, 2020 census | |
+
+## Block assignment files
+
+Block assignment files describe the makeup of individual districts in the N.C. House, N.C. Senate and U.S. House using each district's component census blocks. All block assignment files have the same layout.
+
+| block | district |
+|--|--|
+| 15-character combined Census ID for block | District number|
+
+### Block assignment file, NC House 2022
+
+North Carolina House district plan. Enacted by the NC General Assembly on February 17, 2022 as [House Bill 980](https://ncleg.gov/BillLookUp/2021/H980), becoming Session Law 2022-4.
+
+*Filename: baf_nc_house_2022.csv*
+
+*Source: [N.C. Generaly Assembly](https://ncleg.gov/Files/GIS/Plans_Main/House_2022/SL%202022-4%20House%20-%20Block%20Assignment%20File.zip)*
+
+### Block assignment file, NC Senate 2022
+
+North Carolina Senate district plan. Enacted by the NC General Assembly on February 17, 2022 as [Senate Bill 744](https://ncleg.gov/BillLookUp/2021/S744), becoming Session Law 2022-2.
+
+*Filename: baf_nc_senate_2022.csv*
+
+*Source: [N.C. General Assembly](https://ncleg.gov/Files/GIS/Plans_Main/Senate_2022/SL%202022-2%20Senate%20-%20Block%20Assignment%20File.zip)*
+
+### Block assignment file, US House 2022
+
+North Carolina US Congressional district plan ordered by the NC Courts on February 23, 2022 in Harper v. Hall, File No. 21 CVS 015426, Wake County Superior Court. 
+
+*Filename: baf_us_house_2022.csv*
+
+*Source: [N.C. General Assembly](https://ncleg.gov/Files/GIS/Plans_Main/Congress_2022_Court/2022%20Interim%20Congressional%20-%20Block%20Assignment%20File.zip)*
