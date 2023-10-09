@@ -26,6 +26,10 @@ Tracking stories from The N&O on redistricting during the 2023 cycle.
 ## Analysis of existing maps
 The following tables were generated using precinct-level vote totals for each election contest, mapped to corresponding Census blocks by the Duke Quantifying Gerrymandering team. By using the block assignment file provided by the N.C. General Assembly for each map, we can tally the number of Democrats and Republicans who would be elected using the given district map under the conditions of a specific electoral contest (2020 president, 2016 governor, etc.).
 
+The table includes the statewide vote total across all precincts, as well as a comparison of both the originally enacted maps in 2021 and the final maps used in the 2022 election by court-ordered redraw.
+
+***NOTE: The results here are PRELIMINARY and are subject to change as additional verification, fact-checking, etc. takes place. If you spot any errors, please contact Tyler Dukes.***
+
 ### NC House
 
 |Contest and year | Statewide D vote %| D seats, original map| D seats, final map| Difference|
