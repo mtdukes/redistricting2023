@@ -2,7 +2,7 @@
 
 # Duke precinct vote to block crosswalk
 
-The crosswalk file created by the Duke University team contains the vote breakdown for multiple statewide races by block, based on precinct level election results.
+The crosswalk file created by the Duke University team contains the vote breakdown for multiple statewide races by block, based on precinct level election results. Generated from [the team's shapefile](https://git.math.duke.edu/gitlab/gjh/redistricting2020results/-/blob/main/NC/Shapefiles/cblocks_w20210812Pcts.zip) by exporting to CSV using QGIS Oct. 9, 2023.
 
 *Filename: block_precinct_vote_crosswalk.csv*
 
