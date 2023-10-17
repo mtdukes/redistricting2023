@@ -140,3 +140,46 @@ The table includes the statewide vote total across all precincts, as well as a c
 |g12_sst          |              53.74|                     7|                  9|          2|
 |g08_uss          |              54.33|                     9|                 10|          1|
 |g08_ag           |              61.07|                    13|                 12|         -1|
+
+
+## Uniform Swing Analysis
+One technique used by political scientists and other map experts to gauge the responsiveness of redistricting proposals is to perform a [uniform swing analysis](https://en.wikipedia.org/wiki/Swing_(politics)). By gradually increasing the percentage of Democratic (or Republican) votes across all districts, we can simulate a shift in the political winds toward either party and determine how sharp a swing we'd need to see before changing the number of elected Democrats (or Republicans) under the conditions of a given election.
+
+### N.C. House
+2020 presidential race with an incremental half-percentage point swing.
+
+|Contest and year | Statewide D vote %| D Seats, original map| D Seats, ensemble mode| % of ensemble|
+|:----------------|------------------:|---------------------:|----------------------:|-------------:|
+|g20_pr           |               49.3|                    50|                     57|          35.3|
+|g20_pr_0.005     |               49.8|                    52|                     58|          41.4|
+|g20_pr_0.01      |               50.3|                    54|                     59|          39.1|
+|g20_pr_0.015     |               50.8|                    54|                     59|          43.3|
+|g20_pr_0.02      |               51.3|                    54|                     59|          35.7|
+|g20_pr_0.025     |               51.8|                    55|                     60|          33.6|
+|g20_pr_0.03      |               52.3|                    58|                     61|          32.8|
+|g20_pr_0.035     |               52.8|                    60|                     62|          31.3|
+|g20_pr_0.04      |               53.3|                    61|                     64|          31.7|
+|g20_pr_0.045     |               53.8|                    63|                     65|          32.4|
+|g20_pr_0.05      |               54.3|                    64|                     65|          32.1|
+
+
+
+### N.C. Senate
+2020 presidential race with an incremental half-percentage point swing.
+
+|Contest and year | Statewide D vote %| D Seats, original map| D Seats, ensemble mode| % of ensemble|
+|:----------------|------------------:|---------------------:|----------------------:|-------------:|
+|g20_pr           |               49.3|                    20|                     21|          43.9|
+|g20_pr_0.005     |               49.8|                    21|                     23|          45.0|
+|g20_pr_0.01      |               50.3|                    22|                     23|          49.3|
+|g20_pr_0.015     |               50.8|                    22|                     23|          49.9|
+|g20_pr_0.02      |               51.3|                    22|                     23|          50.0|
+|g20_pr_0.025     |               51.8|                    22|                     23|          49.9|
+|g20_pr_0.03      |               52.3|                    22|                     23|          49.8|
+|g20_pr_0.035     |               52.8|                    23|                     24|          48.1|
+|g20_pr_0.04      |               53.3|                    23|                     24|          45.9|
+|g20_pr_0.045     |               53.8|                    26|                     27|          61.4|
+|g20_pr_0.05      |               54.3|                    26|                     27|          58.8|
+
+
+

@@ -369,6 +369,9 @@ genEnsembleSwing <- function(ensemble_data_path, race_code, interval, max_swing)
       rbind(swing_election)
   }
   
+  histogram_data <- histogram_data %>% 
+    rename(hist_mode_dems = dems_elected, hist_count = map_count)
+  
   return(histogram_data)
   
 }
@@ -572,4 +575,44 @@ read_csv('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', show_col_types =
   filter(map_count == max(map_count)) %>% 
   mutate(race_code = 'g20_pr_0.005', .before = everything())
   
-  
+
+genEnsembleSwing('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.05)
+
+genSwingVotes(baf_nc_house21, 'nc_house', 'g20_pr', 0.005, 0.05) %>% 
+  left_join(
+    genEnsembleSwing('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.05),
+    by = 'race_code'
+  )
+
+#simplify for gh
+genSwingVotes(baf_nc_house21, 'nc_house', 'g20_pr', 0.005, 0.05) %>% 
+  left_join(
+    genEnsembleSwing('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.05),
+    by = 'race_code'
+  ) %>%
+  mutate('Statewide D vote %' = round(total_dem_votes / total_dr_votes * 100, 1)) %>%
+  select(
+    'Contest and year' = race_code,
+    'Statewide D vote %',
+    'D Seats' = seats,
+    'D Seats, ensemble mode' = hist_mode_dems,
+    '% of ensemble' = hist_pct
+  ) %>% 
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+genSwingVotes(baf_nc_house21, 'nc_house', 'g20_pr', 0.005, 0.05) %>% 
+  left_join(
+    genEnsembleSwing('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.05),
+    by = 'race_code'
+  ) %>%
+  mutate('Statewide D vote %' = round(total_dem_votes / total_dr_votes * 100, 1)) %>%
+  select(
+    'Contest and year' = race_code,
+    'Statewide D vote %',
+    'D Seats, original map' = seats,
+    'D Seats, ensemble mode' = hist_mode_dems,
+    '% of ensemble' = hist_pct
+  ) %>% 
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
