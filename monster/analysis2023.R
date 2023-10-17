@@ -39,7 +39,9 @@ cat('...total population', sum(nc_population_block$population), 'calculated from
 # Load Duke precinct vote to block crosswalk ------------------------------
 
 # The crosswalk file created by the Duke University team contains the vote breakdown
-# for multiple statewide races by block, based on precinct level election results
+# for multiple statewide races by block, based on precinct level election results.
+# Generated from shapefile by exporting to csv using QGIS from
+# https://git.math.duke.edu/gitlab/gjh/redistricting2020results/-/blob/main/NC/Shapefiles/cblocks_w20210812Pcts.zip
 duke_crosswalk <- read_csv('../data/block_precinct_vote_crosswalk.csv', col_types = cols(geoID = 'c')) %>%
   clean_names('snake') %>% 
   #fix the ss to sst error for 2012
@@ -71,7 +73,7 @@ baf_us_house21 <-read_csv('../data/baf_us_house_2021.csv', col_types = cols(.def
 #usage
 #
 #baf_nc_house22 %>% genMapResult('nc_house', 'g20_pr')
-genMapResult <- function(baf, chamber, race_code){
+genMapResult <- function(baf, chamber, race_code, crosswalk = duke_crosswalk){
   
   #get the ideal population for given chamber
   ideal_pop <- case_when(
@@ -87,7 +89,7 @@ genMapResult <- function(baf, chamber, race_code){
   }
   
   #narrow down the elections table to the specific race and year
-  election_table <- duke_crosswalk %>% 
+  election_table <- crosswalk %>% 
     select(geo_id, pop2020cen, 
            imputed_votes_dem = paste0(race_code,'_d'),
            imputed_votes_rep = paste0(race_code, '_r'),
@@ -113,7 +115,22 @@ genMapResult <- function(baf, chamber, race_code){
 #
 #usage
 #baf_nc_house22 %>% genElectionTables('nc_house', c('g20_pr', 'g16_pr', 'g12_pr', 'g08_pr'))
-genElectionTables <- function(baf, chamber, contest_list){
+genElectionTables <- function(baf, chamber, contest_list, crosswalk = duke_crosswalk){
+  
+  #get the majority count for given chamber
+  majority <- case_when(
+    chamber == 'nc_house'~ 120/2 + 1,
+    chamber == 'nc_senate' ~ 50/2 + 1,
+    chamber == 'us_house' ~ NA,
+    .default = 0
+  )
+  #supermajority
+  supermajority <- case_when(
+    chamber == 'nc_house'~ 120 * 3/5,
+    chamber == 'nc_senate' ~ 50 * 3/5,
+    chamber == 'us_house' ~ NA,
+    .default = 0
+  )
 
   #initialize an empty ist
   data_list = list()
@@ -123,16 +140,19 @@ genElectionTables <- function(baf, chamber, contest_list){
     race_code = i
     #get the map result for the given contest
     map_result <- baf %>%
-      genMapResult(chamber, race_code)
+      genMapResult(chamber, race_code, crosswalk)
     
     #tally up the seats total vote percentages
     map_summary <- map_result %>%
+      arrange(desc(dem_pct)) %>% 
       summarize(
        seats = sum(party_win == 'D'),
        total_dem_votes = sum(dem_votes),
-       total_dr_votes = sum(total_votes)
+       total_dr_votes = sum(total_votes),
+       swing_majority = 50 - nth(dem_pct, majority),
+       swing_supermajority = 50- nth(dem_pct, supermajority),
       ) %>% 
-      mutate(dem_pct = round(total_dem_votes/total_dr_votes * 100, 2)) %>% 
+      #mutate(dem_pct = round(total_dem_votes/total_dr_votes * 100, 2)) %>% 
       mutate(race_code = race_code, .before = everything())
     
     #assign the contest to a list
@@ -279,6 +299,41 @@ genHistogramChart <- function(race_code, chamber, raw_file_path, baf, mcd = 1){
   }
 }
 
+# Run a uniform swing analysis with a given interval
+#
+# usage
+# genSwingVotes(baf_nc_senate21, 'nc_senate', 'g20_pr', 0.005, 0.05)
+genSwingVotes <- function(baf, chamber, race_code, interval, max_swing, crosswalk = duke_crosswalk){
+  
+  #create a vector of swing values to adjust votes by
+  swing_values <- seq(from = interval, to = max_swing, by = interval)
+  
+  #establish d and r col
+  d_col = paste0(race_code, '_d')
+  r_col = paste0(race_code, '_r')
+  
+  #construct a new crosswalk using the swing values
+  swing_crosswalk <- crosswalk %>% 
+    select(geo_id:pop2020cen, vap2020cen, bvap2020ce,
+           !!d_col, !!r_col )
+  
+  swing_crosswalk <- swing_crosswalk %>% 
+    mutate(total_dr = !!as.name(d_col) + !!as.name(r_col) )
+  
+  for(value in swing_values){
+    swing_crosswalk <- swing_crosswalk %>% 
+      mutate('{race_code}_{value}_d' := !!as.name(d_col) + total_dr * value,
+             '{race_code}_{value}_r' := !!as.name(r_col) - total_dr * value)
+  }
+  
+  #use swing values to create vector of contest list race codes
+  contest_list <- append(race_code, paste0(race_code, '_', swing_values) )
+  
+  #generate the election tables
+  genElectionTables(baf, chamber, contest_list, crosswalk = swing_crosswalk )
+  
+}
+
 # Test functions ----------------------------------------------------------
 
 election_tables <- baf_us_house22 %>% 
@@ -402,20 +457,63 @@ us_house_results <- baf_us_house21 %>%
 #clean up the results for posting to GitHub
 nc_house_results %>% 
   select('Contest and year' = race_code, 'Statewide D vote %' = dem_pct,
-         'D seats, original map' = dems_original, 'D seats, final map' = dems_remedial, Difference) %>% 
+         'D seats, original map' = dems_original, 'D seats, final map' = dems_remedial, Difference) %>%
   knitr::kable('pipe') %>% 
   clipr::write_clip()
 
 nc_senate_results %>% 
   select('Contest and year' = race_code, 'Statewide D vote %' = dem_pct,
-         'D seats, original map' = dems_original, 'D seats, final map' = dems_remedial, Difference) %>% 
+         'D seats, original map' = dems_original, 'D seats, final map' = dems_remedial, Difference) %>%
   knitr::kable('pipe') %>% 
   clipr::write_clip()
 
 us_house_results %>% 
   select('Contest and year' = race_code, 'Statewide D vote %' = dem_pct,
-         'D seats, original map' = dems_original, 'D seats, final map' = dems_remedial, Difference) %>% 
+         'D seats, original map' = dems_original, 'D seats, final map' = dems_remedial, Difference) %>%
   knitr::kable('pipe') %>% 
   clipr::write_clip()
 
+#examine governor 12 for NC Senate
+baf_nc_senate21 %>%
+  genMapResult('nc_senate', 'g12_gv') %>% 
+  mutate(d_win = if_else(party_win == 'D', 1, 0)) %>%
+  arrange(desc(district)) %>% 
+  write_csv('../data/gv12_detail.csv')
 
+
+# Additional histogram data -----------------------------------------------
+
+genHistogramData('../data/ensembles/house/mcd_on/statewide_G12_GV.csv', 0, 120) %>% 
+  write_csv('../data/ensembles/histogram_data/g12_gv_mcd_on.csv')
+
+genHistogramData('../data/ensembles/house/mcd_on/statewide_G16_PR.csv', 0, 120) %>% 
+  write_csv('../data/ensembles/histogram_data/g16_pr_mcd_on.csv')
+
+genHistogramData('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 0, 120) %>% 
+  write_csv('../data/ensembles/histogram_data/g20_pr_mcd_on.csv')
+
+genHistogramData('../data/ensembles/house/mcd_on/statewide_G20_GV.csv', 0, 120) %>% 
+  write_csv('../data/ensembles/histogram_data/g20_gv_mcd_on.csv')
+
+genHistogramData('../data/ensembles/house/mcd_on/statewide_G08_USS.csv', 0, 120) %>% 
+  write_csv('../data/ensembles/histogram_data/g08_uss_mcd_on.csv')
+
+
+# Uniform swing analysis --------------------------------------------------
+
+genMapResult(baf_nc_senate21, 'nc_senate', 'g20_pr') %>% 
+  arrange(desc(dem_pct)) %>% 
+  summarize(median = median(dem_pct),
+            win = nth(dem_pct, 26))
+
+genMapResult(baf_nc_house21, 'nc_house', 'g20_pr') %>% 
+  arrange(desc(dem_pct)) %>% 
+  view()
+
+genElectionTables(baf_nc_house21, 'nc_house', 'g20_pr')
+genElectionTables(baf_nc_senate21, 'nc_senate', 'g20_pr')
+
+genElectionTables(baf_nc_house22, 'nc_house', 'g20_pr')
+genElectionTables(baf_nc_senate22, 'nc_senate', 'g20_pr')
+
+genSwingVotes(baf_nc_senate21, 'nc_senate', 'g20_pr', 0.005, 0.05)
