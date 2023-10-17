@@ -170,19 +170,24 @@ genElectionTables <- function(baf, chamber, contest_list, crosswalk = duke_cross
 }
 
 #function to tally up number of dems elected across ensemble
-#uses path to raw distribution files downloaded from duke team:
+#uses path to raw distribution files downloaded from duke team or a preloaded dataframe:
 #https://git.math.duke.edu/gitlab/gjh/redistricting2020results/-/tree/main/NC/Ensembles
 #also accepts upper and lower boundaries to construct table
 #usage:
 #
 #genHistogramData('../data/ensembles/house/mcd_off/statewide_G20_PR.csv', 45, 65)
-genHistogramData <- function(raw_file_path, hist_start, hist_end){
+genHistogramData <- function(ensemble_data, hist_start, hist_end){
+  
+  #check for dataframe and read in file if its a path
+  if(!is.data.frame(ensemble_data)){
+    ensemble_data <- read_csv(ensemble_data, show_col_types = FALSE)
+  }
+  
   #generate a single-column dataframe using provided boundaries
   data.frame(dems_elected = c(hist_start:hist_end)) %>% 
     #join with the raw distribution file after processing
     left_join(
-      #read in file
-      read_csv(raw_file_path, show_col_types = FALSE) %>%
+      ensemble_data %>%
         #calculate the number of dems elected by counting vote totals above 50%
         mutate(dems_elected = rowSums(. > 0.5)) %>% 
         select(dems_elected) %>%
@@ -334,6 +339,40 @@ genSwingVotes <- function(baf, chamber, race_code, interval, max_swing, crosswal
   
 }
 
+# Use uniform swing analysis to generate a table of most common values from 
+# the Duke ensemble for a given interval and max swing.
+#
+# usage
+# genEnsembleSwing('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.05)
+genEnsembleSwing <- function(ensemble_data_path, race_code, interval, max_swing){
+  
+  #create a vector of swing values to adjust votes by
+  swing_values <- seq(from = interval, to = max_swing, by = interval)
+  
+  #initialize the simplified histogram data
+  base_election <- read_csv(ensemble_data_path, show_col_types = FALSE)
+  
+  histogram_data <- base_election %>% 
+    genHistogramData(0, 120) %>%
+    filter(map_count == max(map_count)) %>% 
+    mutate(race_code = race_code, .before = everything())
+  
+  #loop through the vector of swing values to add to the histogram data
+  for(value in swing_values){
+    swing_election <- base_election %>% 
+      mutate(across(everything(), ~ .x + value)) %>% 
+      genHistogramData(0, 120) %>%
+      filter(map_count == max(map_count)) %>% 
+      mutate(race_code = paste0('g20_pr_', value), .before = everything())
+    
+    histogram_data <- histogram_data %>% 
+      rbind(swing_election)
+  }
+  
+  return(histogram_data)
+  
+}
+
 # Test functions ----------------------------------------------------------
 
 election_tables <- baf_us_house22 %>% 
@@ -402,6 +441,9 @@ genHistogramChart('g20_gv', 'nc_house',
 
 genHistogramChart('g08_uss', 'nc_house', 
                   '../data/ensembles/house/mcd_on/statewide_G08_USS.csv', baf_nc_house21)
+
+genHistogramChart('g20_pr', 'nc_house', 
+                  '../data/ensembles/house/mcd_on/statewide_G20_PR.csv', baf_nc_house21)
 
 
 # Generate results of original and remedial maps --------------------------
@@ -517,3 +559,17 @@ genElectionTables(baf_nc_house22, 'nc_house', 'g20_pr')
 genElectionTables(baf_nc_senate22, 'nc_senate', 'g20_pr')
 
 genSwingVotes(baf_nc_senate21, 'nc_senate', 'g20_pr', 0.005, 0.05)
+
+#get the mode of the 
+
+read_csv('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', show_col_types = FALSE) %>% 
+  genHistogramData(45, 65) %>%
+  filter(map_count == max(map_count))
+
+read_csv('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', show_col_types = FALSE) %>% 
+  mutate(across(everything(), ~ .x + 0.005)) %>% 
+  genHistogramData(0, 120) %>%
+  filter(map_count == max(map_count)) %>% 
+  mutate(race_code = 'g20_pr_0.005', .before = everything())
+  
+  
