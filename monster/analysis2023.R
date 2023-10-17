@@ -206,8 +206,8 @@ genHistogramData <- function(ensemble_data, hist_start, hist_end){
 #a race, and a preloaded block assignment file.
 #
 #syntax:
-#genHistogramChart('g20_pr', 'us_house', '../data/ensembles/congressional/atlas_measureID12_marginals_G20_PR.csv', baf_us_house22)
-genHistogramChart <- function(race_code, chamber, raw_file_path, baf, mcd = 1){
+#genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_PR.csv', 'g20_pr', 'us_house', baf_us_house22)
+genHistogramChart <- function(raw_file_path, race_code, chamber, baf, mcd = 1){
   
   #set the mcd status, default is on
   mcd_status <- ifelse(mcd == 1, 'on', 'off')
@@ -574,6 +574,12 @@ read_csv('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', show_col_types =
   genHistogramData(0, 120) %>%
   filter(map_count == max(map_count)) %>% 
   mutate(race_code = 'g20_pr_0.005', .before = everything())
+
+read_csv('../data/ensembles/senate/mcd_on/statewide_G20_PR.csv', show_col_types = FALSE) %>% 
+  mutate(across(everything(), ~ .x + 0.005)) %>% 
+  genHistogramData(0, 120) %>%
+  filter(map_count == max(map_count)) %>% 
+  mutate(race_code = 'g20_pr_0.005', .before = everything())
   
 
 genEnsembleSwing('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.05)
@@ -594,16 +600,16 @@ genSwingVotes(baf_nc_house21, 'nc_house', 'g20_pr', 0.005, 0.05) %>%
   select(
     'Contest and year' = race_code,
     'Statewide D vote %',
-    'D Seats' = seats,
+    'D Seats, original map' = seats,
     'D Seats, ensemble mode' = hist_mode_dems,
     '% of ensemble' = hist_pct
   ) %>% 
   knitr::kable('pipe') %>% 
   clipr::write_clip()
 
-genSwingVotes(baf_nc_house21, 'nc_house', 'g20_pr', 0.005, 0.05) %>% 
+genSwingVotes(baf_nc_senate21, 'nc_senate', 'g20_pr', 0.005, 0.05) %>% 
   left_join(
-    genEnsembleSwing('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.05),
+    genEnsembleSwing('../data/ensembles/senate/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.05),
     by = 'race_code'
   ) %>%
   mutate('Statewide D vote %' = round(total_dem_votes / total_dr_votes * 100, 1)) %>%
@@ -616,3 +622,10 @@ genSwingVotes(baf_nc_house21, 'nc_house', 'g20_pr', 0.005, 0.05) %>%
   ) %>% 
   knitr::kable('pipe') %>% 
   clipr::write_clip()
+
+#examine this one closer
+genHistogramChart('../data/ensembles/senate/mcd_on/statewide_G20_PR.csv', 'g20_pr', 'nc_senate', baf_nc_senate21)
+
+read_csv('../data/ensembles/senate/mcd_on/statewide_G20_PR.csv', show_col_types = FALSE) %>% 
+  mutate(across(everything(), ~ .x + 0.045)) %>% 
+  genHistogramChart('g20_pr', 'nc_senate', baf_nc_senate21)
