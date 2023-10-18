@@ -3,26 +3,6 @@
 
 A collection of resources and notes for the ongoing analysis of North Carolina's 2023 redistricting proposals.
 
-## Helpful links
-
-* [2021 redistricting repo](https://github.com/mtdukes/redistricting2021)
-* [Duke Quantifying Gerrymandering data repository](https://git.math.duke.edu/gitlab/gjh/redistricting2020results)
-* [2022 precinct sort data](https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2022_11_08/results_precinct_sort/AllCounties.txt)
-
-## Quick reference
-
-**Blocks:** 236,638
-
-**Population:** 10,439,388
-
-For additional reference information and data dictionaries, see the [technical reference readme](https://github.com/mtdukes/redistricting2023/blob/main/technical_reference.md).
-
-## Ongoing coverage
-
-Tracking stories from The N&O on redistricting during the 2023 cycle.
-
-* [Redistricting has started in NC. Wait, again? Here’s what to know.](https://www.newsobserver.com/news/politics-government/article279748284.html) // Kyle Ingram // Sept. 26, 2023
-
 ## Analysis of existing maps
 The following tables were generated using precinct-level vote totals for each election contest, mapped to corresponding Census blocks by the Duke Quantifying Gerrymandering team. By using the block assignment file provided by the N.C. General Assembly for each map, we can tally the number of Democrats and Republicans who would be elected using the given district map under the conditions of a specific electoral contest (2020 president, 2016 governor, etc.).
 
@@ -213,3 +193,25 @@ We can perform the same analysis for the maps in the ensemble to see how the pol
 |g20_gv_0.045     |               56.8|                    27|                     28|          44.3|
 |g20_gv_0.05      |               57.3|                    27|                     28|          38.4|
 
+## Helpful links
+
+* [2021 redistricting repo](https://github.com/mtdukes/redistricting2021)
+* [Duke Quantifying Gerrymandering data repository](https://git.math.duke.edu/gitlab/gjh/redistricting2020results)
+* [2022 precinct sort data](https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2022_11_08/results_precinct_sort/AllCounties.txt)
+* [2021 N.C. Senate analysis by Duke](https://sites.duke.edu/quantifyinggerrymandering/files/2021/11/senateNCGAReport_comparison.pdf#page=3)
+* [2021 N.C. House analysis by Duke](https://sites.duke.edu/quantifyinggerrymandering/files/2021/11/houseNCGAReport_Comparison.pdf#page=3)
+* [2021 N.C. Congressional analysis by Duke](https://sites.duke.edu/quantifyinggerrymandering/files/2021/11/congressionalReport_Comparison.pdf#page=2)
+
+## Quick reference
+
+**Blocks:** 236,638
+
+**Population:** 10,439,388
+
+For additional reference information and data dictionaries, see the [technical reference readme](https://github.com/mtdukes/redistricting2023/blob/main/technical_reference.md).
+
+## Ongoing coverage
+
+Tracking stories from The N&O on redistricting during the 2023 cycle.
+
+* [Redistricting has started in NC. Wait, again? Here’s what to know.](https://www.newsobserver.com/news/politics-government/article279748284.html) // Kyle Ingram // Sept. 26, 2023
