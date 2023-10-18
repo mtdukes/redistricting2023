@@ -26,7 +26,7 @@ Tracking stories from The N&O on redistricting during the 2023 cycle.
 ## Analysis of existing maps
 The following tables were generated using precinct-level vote totals for each election contest, mapped to corresponding Census blocks by the Duke Quantifying Gerrymandering team. By using the block assignment file provided by the N.C. General Assembly for each map, we can tally the number of Democrats and Republicans who would be elected using the given district map under the conditions of a specific electoral contest (2020 president, 2016 governor, etc.).
 
-The table includes the statewide vote total across all precincts, as well as a comparison of both the originally enacted maps in 2021 and the final maps used in the 2022 election by court-ordered redraw.
+The table includes the statewide Democratic vote total across all precincts, according to the data from Duke, as well as a comparison of both the originally enacted maps in 2021 and the final maps used in the 2022 election by court-ordered redraw.
 
 ***NOTE: The results here are PRELIMINARY and are subject to change as additional verification, fact-checking, etc. takes place. If you spot any errors, please contact Tyler Dukes.***
 
@@ -145,6 +145,8 @@ The table includes the statewide vote total across all precincts, as well as a c
 ## Uniform Swing Analysis
 One technique used by political scientists and other map experts to gauge the responsiveness of redistricting proposals is to perform a [uniform swing analysis](https://en.wikipedia.org/wiki/Swing_(politics)). By gradually increasing the percentage of Democratic (or Republican) votes across all districts, we can simulate a shift in the political winds toward either party and determine how sharp a swing we'd need to see before changing the number of elected Democrats (or Republicans) under the conditions of a given election.
 
+We can perform the same analysis for the maps in the ensemble to see how the political swings in the electorate under a proposed map compare to what's "normal." Here, we're simplifying the results of that analysis to include the number of Democrats elected in the largest number of maps in the ensemble, or mode, along with the percentage of maps in the ensemble that resulted in that number.
+
 ### N.C. House
 2020 presidential race with an incremental half-percentage point swing.
 
@@ -162,7 +164,21 @@ One technique used by political scientists and other map experts to gauge the re
 |g20_pr_0.045     |               53.8|                    63|                     65|          32.4|
 |g20_pr_0.05      |               54.3|                    64|                     65|          32.1|
 
+2020 governor's race with an incremental half-percentage point swing.
 
+|Contest and year | Statewide D vote %| D Seats, original map| D Seats, ensemble mode| % of ensemble|
+|:----------------|------------------:|---------------------:|----------------------:|-------------:|
+|g20_gv           |               52.3|                    58|                     62|          28.3|
+|g20_gv_0.005     |               52.8|                    59|                     62|          31.4|
+|g20_gv_0.01      |               53.3|                    62|                     64|          29.5|
+|g20_gv_0.015     |               53.8|                    64|                     66|          30.5|
+|g20_gv_0.02      |               54.3|                    65|                     67|          29.9|
+|g20_gv_0.025     |               54.8|                    65|                     68|          32.6|
+|g20_gv_0.03      |               55.3|                    66|                     70|          29.1|
+|g20_gv_0.035     |               55.8|                    66|                     71|          31.3|
+|g20_gv_0.04      |               56.3|                    68|                     72|          35.8|
+|g20_gv_0.045     |               56.8|                    70|                     73|          36.4|
+|g20_gv_0.05      |               57.3|                    72|                     74|          36.1|
 
 ### N.C. Senate
 2020 presidential race with an incremental half-percentage point swing.
@@ -181,5 +197,19 @@ One technique used by political scientists and other map experts to gauge the re
 |g20_pr_0.045     |               53.8|                    26|                     27|          61.4|
 |g20_pr_0.05      |               54.3|                    26|                     27|          58.8|
 
+2020 governor race with an incremental half-percentage point swing.
 
+|Contest and year | Statewide D vote %| D Seats, original map| D Seats, ensemble mode| % of ensemble|
+|:----------------|------------------:|---------------------:|----------------------:|-------------:|
+|g20_gv           |               52.3|                    23|                     24|          48.2|
+|g20_gv_0.005     |               52.8|                    24|                     25|          47.4|
+|g20_gv_0.01      |               53.3|                    24|                     25|          46.1|
+|g20_gv_0.015     |               53.8|                    24|                     26|          44.2|
+|g20_gv_0.02      |               54.3|                    25|                     26|          41.3|
+|g20_gv_0.025     |               54.8|                    26|                     27|          58.7|
+|g20_gv_0.03      |               55.3|                    26|                     27|          52.6|
+|g20_gv_0.035     |               55.8|                    27|                     28|          44.0|
+|g20_gv_0.04      |               56.3|                    27|                     28|          44.7|
+|g20_gv_0.045     |               56.8|                    27|                     28|          44.3|
+|g20_gv_0.05      |               57.3|                    27|                     28|          38.4|
 

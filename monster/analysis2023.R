@@ -10,6 +10,7 @@ library(tidyverse)
 library(tidycensus)
 library(janitor)
 library(ggplot2)
+library(jsonlite)
 
 # set api key for tidycensus
 census_api_key(read_lines('keys/census_api', n_max = 1))
@@ -363,7 +364,7 @@ genEnsembleSwing <- function(ensemble_data_path, race_code, interval, max_swing)
       mutate(across(everything(), ~ .x + value)) %>% 
       genHistogramData(0, 120) %>%
       filter(map_count == max(map_count)) %>% 
-      mutate(race_code = paste0('g20_pr_', value), .before = everything())
+      mutate(race_code = paste0(race_code, '_', value), .before = everything())
     
     histogram_data <- histogram_data %>% 
       rbind(swing_election)
@@ -374,6 +375,36 @@ genEnsembleSwing <- function(ensemble_data_path, race_code, interval, max_swing)
   
   return(histogram_data)
   
+}
+
+#dem_pct, democrats, republicans
+genSwingJSON <- function(swing_data){
+  
+  #initialize an emtpy list
+  swing_list <- list()
+  
+  #iterate through the swing data to reformat the list
+  for(row in 1:nrow(swing_data)){
+    list_item <- list(list(democrats = swing_data[row, 'democrats'][[1]],
+                           republicans = swing_data[row, 'republicans'][[1]]))
+    swing_list[as.character(swing_data[row, 'dem_pct'][[1]])] <- list_item
+  }
+  
+  swing_json <- swing_list %>% 
+    toJSON(auto_unbox = TRUE, pretty = TRUE )
+  
+  return(swing_json)
+  
+}
+
+#dems_elected, map_count
+genHistogramJSON <- function(histogram_data){
+  histogram_json <- setNames(as.list(histogram_data$map_count),
+           as.list(histogram_data$dems_elected)
+           ) %>%
+    toJSON(auto_unbox = TRUE, pretty = TRUE )
+  
+  return(histogram_json)
 }
 
 # Test functions ----------------------------------------------------------
@@ -583,6 +614,7 @@ read_csv('../data/ensembles/senate/mcd_on/statewide_G20_PR.csv', show_col_types 
   
 
 genEnsembleSwing('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.05)
+genHistogramData('../data/ensembles/house/mcd_off/statewide_G20_PR.csv', 45, 65)
 
 genSwingVotes(baf_nc_house21, 'nc_house', 'g20_pr', 0.005, 0.05) %>% 
   left_join(
@@ -594,6 +626,22 @@ genSwingVotes(baf_nc_house21, 'nc_house', 'g20_pr', 0.005, 0.05) %>%
 genSwingVotes(baf_nc_house21, 'nc_house', 'g20_pr', 0.005, 0.05) %>% 
   left_join(
     genEnsembleSwing('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.05),
+    by = 'race_code'
+  ) %>%
+  mutate('Statewide D vote %' = round(total_dem_votes / total_dr_votes * 100, 1)) %>%
+  select(
+    'Contest and year' = race_code,
+    'Statewide D vote %',
+    'D Seats, original map' = seats,
+    'D Seats, ensemble mode' = hist_mode_dems,
+    '% of ensemble' = hist_pct
+  ) %>% 
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+genSwingVotes(baf_nc_house21, 'nc_house', 'g20_gv', 0.005, 0.05) %>% 
+  left_join(
+    genEnsembleSwing('../data/ensembles/house/mcd_on/statewide_G20_GV.csv', 'g20_gv', 0.005, 0.05),
     by = 'race_code'
   ) %>%
   mutate('Statewide D vote %' = round(total_dem_votes / total_dr_votes * 100, 1)) %>%
@@ -623,9 +671,92 @@ genSwingVotes(baf_nc_senate21, 'nc_senate', 'g20_pr', 0.005, 0.05) %>%
   knitr::kable('pipe') %>% 
   clipr::write_clip()
 
+genSwingVotes(baf_nc_senate21, 'nc_senate', 'g20_gv', 0.005, 0.05) %>% 
+  left_join(
+    genEnsembleSwing('../data/ensembles/senate/mcd_on/statewide_G20_gv.csv', 'g20_gv', 0.005, 0.05),
+    by = 'race_code'
+  ) %>%
+  mutate('Statewide D vote %' = round(total_dem_votes / total_dr_votes * 100, 1)) %>% 
+  select(
+    'Contest and year' = race_code,
+    'Statewide D vote %',
+    'D Seats, original map' = seats,
+    'D Seats, ensemble mode' = hist_mode_dems,
+    '% of ensemble' = hist_pct
+  ) %>% 
+  knitr::kable('pipe') %>%
+  clipr::write_clip()
+
 #examine this one closer
 genHistogramChart('../data/ensembles/senate/mcd_on/statewide_G20_PR.csv', 'g20_pr', 'nc_senate', baf_nc_senate21)
+genHistogramData('../data/ensembles/senate/mcd_on/statewide_G20_PR.csv', 0, 50)
 
 read_csv('../data/ensembles/senate/mcd_on/statewide_G20_PR.csv', show_col_types = FALSE) %>% 
   mutate(across(everything(), ~ .x + 0.045)) %>% 
   genHistogramChart('g20_pr', 'nc_senate', baf_nc_senate21)
+
+
+# Produce relevant JSON ---------------------------------------------------
+#
+# responsive/unresponsive map format
+# {
+#   "30": {"democrats": 21, "republicans": 29},
+#   "31": {"democrats": 22, "republicans": 28}
+# }
+
+#single map responsiveness json
+genSwingVotes(baf_nc_senate21, 'nc_senate', 'g20_pr', 0.005, 0.05) %>% 
+  left_join(
+    genEnsembleSwing('../data/ensembles/senate/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.05),
+    by = 'race_code'
+  ) %>%
+  mutate(dem_pct = round(total_dem_votes / total_dr_votes * 100, 1),
+         republicans_single = 50 - seats,
+         republicans_ensemble = 50 - hist_mode_dems) %>% 
+  select(dem_pct,
+         democrats_single = seats, republicans_single,
+         democrats_ensemble = hist_mode_dems, republicans_ensemble) %>% 
+  select(dem_pct, contains('_single')) %>% 
+  rename_with(~str_remove(., '_single')) %>% 
+  genSwingJSON() %>% 
+  write('../data/json/responsive_g20_pr_senate_original.json')
+
+#ensemble map responsiveness json
+genSwingVotes(baf_nc_senate21, 'nc_senate', 'g20_pr', 0.005, 0.05) %>% 
+  left_join(
+    genEnsembleSwing('../data/ensembles/senate/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.05),
+    by = 'race_code'
+  ) %>%
+  mutate(dem_pct = round(total_dem_votes / total_dr_votes * 100, 1),
+         republicans_single = 50 - seats,
+         republicans_ensemble = 50 - hist_mode_dems) %>% 
+  select(dem_pct,
+         democrats_single = seats, republicans_single,
+         democrats_ensemble = hist_mode_dems, republicans_ensemble) %>% 
+  select(dem_pct, contains('_ensemble')) %>% 
+  rename_with(~str_remove(., '_ensemble')) %>% 
+  genSwingJSON() %>% 
+  write('../data/json/responsive_g20_pr_senate_ensemble.json')
+
+
+# histogram format
+# {"30":0,"31":0,"32":0,"33":0,"34":0,"35":0,"36":0,"37":0,"38":0,"39":0,"40":0,
+# "41":0,"42":0,"43":0,"44":0,"45":0,"46":0,"47":0,"48":0,"49":0,"50":0,"51":0,
+# "52":0,"53":0,"54":0,"55":0,"56":0,"57":0,"58":0,"59":0,"60":0,"61":0,"62":0,
+# "63":0,"64":1,"65":79,"66":830,"67":4051,"68":11308,"69":19747,"70":23973,"71":20897,
+# "72":12663,"73":5081,"74":1223,"75":137,"76":9,"77":1,"78":0,"79":0,"80":0}
+#
+
+hist_json <- genHistogramData('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 30, 80) %>% 
+  select(dems_elected, map_count)
+
+setNames(as.list(hist_json$map_count),
+           as.list(hist_json$dems_elected)
+  ) %>% 
+  toJSON(auto_unbox = TRUE, pretty = TRUE )
+
+hist_json <- genHistogramData('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 30, 80) %>% 
+  select(dems_elected, map_count) %>% 
+  genHistogramJSON() %>% 
+  write('../data/json/histogram_g20_pr_house.json')
+
