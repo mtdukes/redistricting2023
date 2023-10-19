@@ -11,7 +11,9 @@ The following tables were generated using precinct-level vote totals for each el
 The table includes the statewide Democratic vote total across all precincts, according to the data from Duke, as well as a comparison of the 2023 proposed maps and the final maps used in the 2022 election by court-ordered redraw.
 
 ### NC House
-[N.C. House Bill 898.](https://ncleg.gov/BillLookUp/2023/H898)
+*[N.C. House Bill 898.](https://ncleg.gov/BillLookUp/2023/H898)*
+
+Under the conditions of the major general elections in 2020 — president, U.S. Senate, governor, lt. governor and attorney general — there's a **7 to 10 seat** difference in favor of GOP compared to the maps used in 2022.
 
 |Contest and year | Statewide D vote %| D seats, 2023 map| D seats, 2022 map| Difference|
 |:----------------|------------------:|-----------------:|-----------------:|----------:|
@@ -48,12 +50,16 @@ The table includes the statewide Democratic vote total across all precincts, acc
 |g08_uss          |              54.33|                64|                70|         -6|
 |g08_ag           |              61.07|                93|                97|         -4|
 
-We can also compare the simulated performance of the maps to an "ensemble" of 100,000 maps created by the Duke Quantifying Gerrymandering team. By counting how many Republicans or Democrats are elected using each map and in each election, we can see how often a given proposal lines up with what we'd expect from our collection of tens of thousands of maps.
+We can also compare the simulated performance of the maps to an "ensemble" of 100,000 maps created by the Duke Quantifying Gerrymandering team. By counting how many Republicans or Democrats are elected using each map and in each election, we can see how often a given proposal lines up with what we'd expect from the collection of tens of thousands of maps.
+
+Under the conditions of the major general elections in 2020 — president, U.S. Senate, governor, lt. governor and attorney general — the maps proposed by the N.C. General Assembly would elect **5 to 7** more Republicans than expected, based on a collection of 100,000 computer-generated maps provided by the Duke team.
 
 ![Proposed NC House map under various election conditions compared to the Duke ensemble](https://github.com/mtdukes/redistricting2023/blob/main/charts/gifs/nc_house.gif)
 
 ### NC Senate
-[N.C. Senate Bill 758](https://ncleg.gov/BillLookUp/2023/S758)
+*[N.C. Senate Bill 758](https://ncleg.gov/BillLookUp/2023/S758)*
+
+Under the conditions of the major general elections in 2020 — president, U.S. Senate, governor, lt. governor and attorney general — there's a **2 to 4 seat** difference in favor of GOP compared to the maps used in 2022.
 
 |Contest and year | Statewide D vote %| D seats, 2023 map| D seats, 2022 map| Difference|
 |:----------------|------------------:|-----------------:|-----------------:|----------:|
@@ -90,12 +96,14 @@ We can also compare the simulated performance of the maps to an "ensemble" of 10
 |g08_uss          |              54.33|                26|                27|         -1|
 |g08_ag           |              61.07|                40|                42|         -2|
 
-Compared to the ensemble.
+Under the conditions of the major general elections in 2020 — president, U.S. Senate, governor, lt. governor and attorney general — the maps proposed by the N.C. General Assembly would elect **1 to 3** more Republicans than expected, based on a collection of 100,000 computer-generated maps provided by the Duke team.
 
 ![Proposed NC Senate map under various election conditions compared to the Duke ensemble](https://github.com/mtdukes/redistricting2023/blob/main/charts/gifs/nc_senate.gif)
 
 ### US House
-[N.C. Senate Bill 756](https://ncleg.gov/BillLookUp/2023/S756)
+*[N.C. Senate Bill 756](https://ncleg.gov/BillLookUp/2023/S756)*
+
+Under the conditions of the major general elections in 2020 — president, U.S. Senate, governor, lt. governor and attorney general — there's a **3 to 4 seat** difference in favor of GOP compared to the maps used in 2022.
 
 |Contest and year | Statewide D vote %| D seats, 2023 map| D seats, 2022 map| Difference|
 |:----------------|------------------:|-----------------:|-----------------:|----------:|
@@ -132,11 +140,13 @@ Compared to the ensemble.
 |g08_uss          |              54.33|                 9|                10|         -1|
 |g08_ag           |              61.07|                14|                12|          2|
 
-Compared to the ensemble.
+Under the conditions of the major general elections in 2020 — president, U.S. Senate, governor, lt. governor and attorney general — the maps proposed by the N.C. General Assembly would elect **2 to 4** more Republicans than expected, based on a collection of 100,000 computer-generated maps provided by the Duke team.
 
 ![Proposed Congressional map (S756) under various election conditions compared to the Duke ensemble](https://github.com/mtdukes/redistricting2023/blob/main/charts/gifs/us_house756.gif)
 
-[N.C. Senate Bill 757](https://ncleg.gov/BillLookUp/2023/S757)
+*[N.C. Senate Bill 757](https://ncleg.gov/BillLookUp/2023/S757)*
+
+Under the conditions of the major general elections in 2020 — president, U.S. Senate, governor, lt. governor and attorney general — there's a **2 to 3 seat** difference in favor of GOP compared to the maps used in 2022.
 
 |Contest and year | Statewide D vote %| D seats, 2023 map| D seats, 2022 map| Difference|
 |:----------------|------------------:|-----------------:|-----------------:|----------:|
@@ -173,7 +183,7 @@ Compared to the ensemble.
 |g08_uss          |              54.33|                 9|                10|         -1|
 |g08_ag           |              61.07|                14|                12|          2|
 
-Compared to the ensemble.
+Under the conditions of the major general elections in 2020 — president, U.S. Senate, governor, lt. governor and attorney general — the maps proposed by the N.C. General Assembly would elect **1 to 3** more Republicans than expected, based on a collection of 100,000 computer-generated maps provided by the Duke team.
 
 ![Proposed Congressional map (S757) under various election conditions compared to the Duke ensemble](https://github.com/mtdukes/redistricting2023/blob/main/charts/gifs/us_house757.gif)
 

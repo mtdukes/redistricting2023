@@ -934,3 +934,44 @@ us_house_results757 %>%
          'D seats, 2023 map' = dems_2023, 'D seats, 2022 map' = dems_2022, Difference) %>%
   knitr::kable('pipe') %>% 
   clipr::write_clip()
+
+nc_house_results %>% 
+  filter(race_code %in% c('g20_pr', 'g20_uss', 'g20_gv', 'g20_lg', 'g20_ag'))
+
+nc_senate_results %>% 
+  filter(race_code %in% c('g20_pr', 'g20_uss', 'g20_gv', 'g20_lg', 'g20_ag'))
+
+us_house_results756 %>% 
+  filter(race_code %in% c('g20_pr', 'g20_uss', 'g20_gv', 'g20_lg', 'g20_ag'))
+
+us_house_results757 %>% 
+  filter(race_code %in% c('g20_pr', 'g20_uss', 'g20_gv', 'g20_lg', 'g20_ag', 'g16_pr'))
+
+
+genHistogramChart('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 'g20_pr', 'nc_house', baf_nc_house_h898) #7
+genHistogramChart('../data/ensembles/house/mcd_on/statewide_G20_USS.csv', 'g20_uss', 'nc_house', baf_nc_house_h898) #7
+genHistogramChart('../data/ensembles/house/mcd_on/statewide_G20_GV.csv', 'g20_gv', 'nc_house', baf_nc_house_h898) #7
+genHistogramChart('../data/ensembles/house/mcd_on/statewide_G20_LG.csv', 'g20_lg', 'nc_house', baf_nc_house_h898) #5
+genHistogramChart('../data/ensembles/house/mcd_on/statewide_G20_AG.csv', 'g20_ag', 'nc_house', baf_nc_house_h898) #7
+genHistogramChart('../data/ensembles/house/mcd_on/statewide_G16_PR.csv', 'g16_pr', 'nc_house', baf_nc_house_h898)
+
+genHistogramChart('../data/ensembles/senate/mcd_on/statewide_G20_PR.csv', 'g20_pr', 'nc_senate', baf_nc_senate_s758) #2
+genHistogramChart('../data/ensembles/senate/mcd_on/statewide_G20_USS.csv', 'g20_uss', 'nc_senate', baf_nc_senate_s758) #3
+genHistogramChart('../data/ensembles/senate/mcd_on/statewide_G20_GV.csv', 'g20_gv', 'nc_senate', baf_nc_senate_s758) #1
+genHistogramChart('../data/ensembles/senate/mcd_on/statewide_G20_LG.csv', 'g20_lg', 'nc_senate', baf_nc_senate_s758) #3
+genHistogramChart('../data/ensembles/senate/mcd_on/statewide_G20_AG.csv', 'g20_ag', 'nc_senate', baf_nc_senate_s758) #3
+genHistogramChart('../data/ensembles/senate/mcd_on/statewide_G16_PR.csv', 'g16_pr', 'nc_senate', baf_nc_senate_s758)
+
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_PR.csv', 'g20_pr', 'us_house', baf_us_house_s756) #2
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_USS.csv', 'g20_uss', 'us_house', baf_us_house_s756) #3
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_GV.csv', 'g20_gv', 'us_house', baf_us_house_s756) #4
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_LG.csv', 'g20_lg', 'us_house', baf_us_house_s756) #2
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_AG.csv', 'g20_ag', 'us_house', baf_us_house_s756) #3
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G16_PR.csv', 'g16_pr', 'us_house', baf_us_house_s756)
+
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_PR.csv', 'g20_pr', 'us_house', baf_us_house_s757) #2
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_USS.csv', 'g20_uss', 'us_house', baf_us_house_s757) #2
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_GV.csv', 'g20_gv', 'us_house', baf_us_house_s757) #3
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_LG.csv', 'g20_lg', 'us_house', baf_us_house_s757) #1
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_AG.csv', 'g20_ag', 'us_house', baf_us_house_s757) #2
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G16_PR.csv', 'g16_pr', 'us_house', baf_us_house_s757)
