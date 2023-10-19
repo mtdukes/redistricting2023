@@ -48,6 +48,10 @@ The table includes the statewide Democratic vote total across all precincts, acc
 |g08_uss          |              54.33|                64|                70|         -6|
 |g08_ag           |              61.07|                93|                97|         -4|
 
+Compared to the ensemble.
+
+![Proposed NC House map under various election conditions compared to the Duke ensemble](https://github.com/mtdukes/redistricting2023/blob/main/charts/gifs/nc_house.gif)
+
 ### NC Senate
 [N.C. Senate Bill 758](https://ncleg.gov/BillLookUp/2023/S758)
 
@@ -85,6 +89,10 @@ The table includes the statewide Democratic vote total across all precincts, acc
 |g12_sst          |              53.74|                26|                25|          1|
 |g08_uss          |              54.33|                26|                27|         -1|
 |g08_ag           |              61.07|                40|                42|         -2|
+
+Compared to the ensemble.
+
+![Proposed NC Senate map under various election conditions compared to the Duke ensemble](https://github.com/mtdukes/redistricting2023/blob/main/charts/gifs/nc_senate.gif)
 
 ### US House
 [N.C. Senate Bill 756](https://ncleg.gov/BillLookUp/2023/S756)
@@ -124,6 +132,10 @@ The table includes the statewide Democratic vote total across all precincts, acc
 |g08_uss          |              54.33|                 9|                10|         -1|
 |g08_ag           |              61.07|                14|                12|          2|
 
+Compared to the ensemble.
+
+![Proposed Congressional map (S756) under various election conditions compared to the Duke ensemble](https://github.com/mtdukes/redistricting2023/blob/main/charts/gifs/us_house756.gif)
+
 [N.C. Senate Bill 757](https://ncleg.gov/BillLookUp/2023/S757)
 
 |Contest and year | Statewide D vote %| D seats, 2023 map| D seats, 2022 map| Difference|
@@ -160,6 +172,10 @@ The table includes the statewide Democratic vote total across all precincts, acc
 |g12_sst          |              53.74|                 6|                 9|         -3|
 |g08_uss          |              54.33|                 9|                10|         -1|
 |g08_ag           |              61.07|                14|                12|          2|
+
+Compared to the ensemble.
+
+![Proposed Congressional map (S757) under various election conditions compared to the Duke ensemble](https://github.com/mtdukes/redistricting2023/blob/main/charts/gifs/us_house757.gif)
 
 ## Analysis of existing maps
 The following tables were generated using precinct-level vote totals for each election contest, mapped to corresponding Census blocks by the Duke Quantifying Gerrymandering team. By using the block assignment file provided by the N.C. General Assembly for each map, we can tally the number of Democrats and Republicans who would be elected using the given district map under the conditions of a specific electoral contest (2020 president, 2016 governor, etc.).
