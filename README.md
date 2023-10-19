@@ -187,6 +187,89 @@ Under the conditions of the major general elections in 2020 — president, U.S. 
 
 ![Proposed Congressional map (S757) under various election conditions compared to the Duke ensemble](https://github.com/mtdukes/redistricting2023/blob/main/charts/gifs/us_house757.gif)
 
+## Uniform swing analysis - proposed maps
+One technique used by political scientists and other map experts to gauge the responsiveness of redistricting proposals is to perform a [uniform swing analysis](https://en.wikipedia.org/wiki/Swing_(politics)). By gradually increasing the percentage of Democratic (or Republican) votes across all districts, we can simulate a shift in the political winds toward either party and determine how sharp a swing we'd need to see before changing the number of elected Democrats (or Republicans) under the conditions of a given election.
+
+We can perform the same analysis for the maps in the ensemble to see how the political swings in the electorate under a proposed map compare to what's "normal." Here, we're simplifying the results of that analysis to include the number of Democrats elected in the largest number of maps in the ensemble, or mode, along with the percentage of maps in the ensemble that resulted in that number.
+
+### N.C. House
+*2020 presidential race with an incremental half-percentage point swing.*
+
+Under the conditions of this election, the analysis shows Democrats would need a **5.1 point** swing to take the majority.
+
+|Swing value | Statewide D vote %| D Seats, proposed map| D Seats, ensemble mode| % of ensemble|
+|:-----------|------------------:|---------------------:|----------------------:|-------------:|
+|NA          |               49.3|                    50|                     57|          35.3|
+|0.005       |               49.8|                    50|                     58|          41.4|
+|0.01        |               50.3|                    50|                     59|          39.1|
+|0.015       |               50.8|                    51|                     59|          43.3|
+|0.02        |               51.3|                    51|                     59|          35.7|
+|0.025       |               51.8|                    52|                     60|          33.6|
+|0.03        |               52.3|                    52|                     61|          32.8|
+|0.035       |               52.8|                    54|                     62|          31.3|
+|0.04        |               53.3|                    58|                     64|          31.7|
+|0.045       |               53.8|                    59|                     65|          32.4|
+|0.05        |               54.3|                    60|                     65|          32.1|
+|0.055       |               54.8|                    62|                     67|          30.6|
+|0.06        |               55.3|                    64|                     68|          37.2|
+|0.065       |               55.8|                    67|                     68|          38.0|
+|0.07        |               56.3|                    70|                     70|          32.5|
+|0.075       |               56.8|                    70|                     70|          30.4|
+|0.08        |               57.3|                    73|                     72|          30.2|
+
+*2020 governor race with an incremental half-percentage point swing.*
+
+Under the conditions of this election, the analysis shows Democrats would need a **1.4 point** swing to take the majority.
+
+|Swing value | Statewide D vote %| D Seats, proposed map| D Seats, ensemble mode| % of ensemble|
+|:-----------|------------------:|---------------------:|----------------------:|-------------:|
+|NA          |               52.3|                    55|                     62|          28.3|
+|0.005       |               52.8|                    56|                     62|          31.4|
+|0.01        |               53.3|                    58|                     64|          29.5|
+|0.015       |               53.8|                    61|                     66|          30.5|
+|0.02        |               54.3|                    65|                     67|          29.9|
+|0.025       |               54.8|                    65|                     68|          32.6|
+|0.03        |               55.3|                    68|                     70|          29.1|
+|0.035       |               55.8|                    69|                     71|          31.3|
+|0.04        |               56.3|                    71|                     72|          35.8|
+|0.045       |               56.8|                    73|                     73|          36.4|
+|0.05        |               57.3|                    73|                     74|          36.1|
+
+### N.C. Senate
+*2020 presidential race with an incremental half-percentage point swing.*
+
+Under the conditions of this election, the analysis shows Democrats would need a **5 point** swing to take the majority.
+
+|Swing value | Statewide D vote %| D Seats, original map| D Seats, ensemble mode| % of ensemble|
+|:-----------|------------------:|---------------------:|----------------------:|-------------:|
+|NA          |               49.3|                    19|                     21|          43.9|
+|0.005       |               49.8|                    20|                     23|          45.0|
+|0.01        |               50.3|                    21|                     23|          49.3|
+|0.015       |               50.8|                    21|                     23|          49.9|
+|0.02        |               51.3|                    21|                     23|          50.0|
+|0.025       |               51.8|                    21|                     23|          49.9|
+|0.03        |               52.3|                    22|                     23|          49.8|
+|0.035       |               52.8|                    23|                     24|          48.1|
+|0.04        |               53.3|                    23|                     24|          45.9|
+|0.045       |               53.8|                    25|                     27|          61.4|
+|0.05        |               54.3|                    25|                     27|          58.8|
+|0.055       |               54.8|                    26|                     27|          54.8|
+|0.06        |               55.3|                    27|                     28|          41.7|
+
+*2020 governor race with an incremental half-percentage point swing.*
+
+Under the conditions of this election, the analysis shows Democrats would need a **2.4 point** swing to take the majority.
+
+|Swing value | Statewide D vote %| D Seats, original map| D Seats, ensemble mode| % of ensemble|
+|:-----------|------------------:|---------------------:|----------------------:|-------------:|
+|NA          |               52.3|                    23|                     24|          48.2|
+|0.005       |               52.8|                    24|                     25|          47.4|
+|0.01        |               53.3|                    24|                     25|          46.1|
+|0.015       |               53.8|                    24|                     26|          44.2|
+|0.02        |               54.3|                    24|                     26|          41.3|
+|0.025       |               54.8|                    26|                     27|          58.7|
+|0.03        |               55.3|                    26|                     27|          52.6|
+
 ## Analysis of existing maps
 The following tables were generated using precinct-level vote totals for each election contest, mapped to corresponding Census blocks by the Duke Quantifying Gerrymandering team. By using the block assignment file provided by the N.C. General Assembly for each map, we can tally the number of Democrats and Republicans who would be elected using the given district map under the conditions of a specific electoral contest (2020 president, 2016 governor, etc.).
 
@@ -304,7 +387,7 @@ The table includes the statewide Democratic vote total across all precincts, acc
 |g08_ag           |              61.07|                    13|                 12|         -1|
 
 
-## Uniform Swing Analysis
+## Uniform Swing Analysis - existing maps
 One technique used by political scientists and other map experts to gauge the responsiveness of redistricting proposals is to perform a [uniform swing analysis](https://en.wikipedia.org/wiki/Swing_(politics)). By gradually increasing the percentage of Democratic (or Republican) votes across all districts, we can simulate a shift in the political winds toward either party and determine how sharp a swing we'd need to see before changing the number of elected Democrats (or Republicans) under the conditions of a given election.
 
 We can perform the same analysis for the maps in the ensemble to see how the political swings in the electorate under a proposed map compare to what's "normal." Here, we're simplifying the results of that analysis to include the number of Democrats elected in the largest number of maps in the ensemble, or mode, along with the percentage of maps in the ensemble that resulted in that number.

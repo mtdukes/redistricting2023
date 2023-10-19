@@ -975,3 +975,72 @@ genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G
 genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_LG.csv', 'g20_lg', 'us_house', baf_us_house_s757) #1
 genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_AG.csv', 'g20_ag', 'us_house', baf_us_house_s757) #2
 genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G16_PR.csv', 'g16_pr', 'us_house', baf_us_house_s757)
+
+
+genSwingVotes(baf_nc_house_h898, 'nc_house', 'g20_pr', 0.005, 0.08) %>% 
+  left_join(
+    genEnsembleSwing('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.08),
+    by = 'race_code'
+  ) %>%
+  mutate('Statewide D vote %' = round(total_dem_votes / total_dr_votes * 100, 1),
+         'Swing value' = str_extract(race_code,'^.+_.+_(.+)$', 1)) %>%
+  select(
+    'Swing value',
+    'Statewide D vote %',
+    'D Seats, proposed map' = seats,
+    'D Seats, ensemble mode' = hist_mode_dems,
+    '% of ensemble' = hist_pct
+  ) %>% 
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+genSwingVotes(baf_nc_senate_s758, 'nc_senate', 'g20_pr', 0.005, 0.06) %>% 
+  left_join(
+    genEnsembleSwing('../data/ensembles/senate/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.06),
+    by = 'race_code'
+  ) %>%
+  mutate('Statewide D vote %' = round(total_dem_votes / total_dr_votes * 100, 1),
+         'Swing value' = str_extract(race_code,'^.+_.+_(.+)$', 1)) %>%
+  select(
+    'Swing value',
+    'Statewide D vote %',
+    'D Seats, original map' = seats,
+    'D Seats, ensemble mode' = hist_mode_dems,
+    '% of ensemble' = hist_pct
+  ) %>% 
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+genSwingVotes(baf_nc_house_h898, 'nc_house', 'g20_gv', 0.005, 0.08) %>% 
+  left_join(
+    genEnsembleSwing('../data/ensembles/house/mcd_on/statewide_G20_GV.csv', 'g20_gv', 0.005, 0.08),
+    by = 'race_code'
+  ) %>%
+  mutate('Statewide D vote %' = round(total_dem_votes / total_dr_votes * 100, 1),
+         'Swing value' = str_extract(race_code,'^.+_.+_(.+)$', 1)) %>%
+  select(
+    'Swing value',
+    'Statewide D vote %',
+    'D Seats, proposed map' = seats,
+    'D Seats, ensemble mode' = hist_mode_dems,
+    '% of ensemble' = hist_pct
+  ) %>% 
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+genSwingVotes(baf_nc_senate_s758, 'nc_senate', 'g20_gv', 0.005, 0.06) %>% 
+  left_join(
+    genEnsembleSwing('../data/ensembles/senate/mcd_on/statewide_G20_GV.csv', 'g20_gv', 0.005, 0.06),
+    by = 'race_code'
+  ) %>%
+  mutate('Statewide D vote %' = round(total_dem_votes / total_dr_votes * 100, 1),
+         'Swing value' = str_extract(race_code,'^.+_.+_(.+)$', 1)) %>%
+  select(
+    'Swing value',
+    'Statewide D vote %',
+    'D Seats, original map' = seats,
+    'D Seats, ensemble mode' = hist_mode_dems,
+    '% of ensemble' = hist_pct
+  ) %>% 
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
