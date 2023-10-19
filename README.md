@@ -3,12 +3,168 @@
 
 A collection of resources and notes for the ongoing analysis of North Carolina's 2023 redistricting proposals.
 
+***NOTE: The results here are PRELIMINARY and are subject to change as additional verification, fact-checking, etc. takes place. If you spot any errors, please contact Tyler Dukes.***
+
+## Analysis of proposed maps
+The following tables were generated using precinct-level vote totals for each election contest, mapped to corresponding Census blocks by the Duke Quantifying Gerrymandering team. By using the block assignment file generated from maps by the N.C. General Assembly, we can tally the number of Democrats and Republicans who would be elected using the given district map under the conditions of a specific electoral contest (2020 president, 2016 governor, etc.).
+
+The table includes the statewide Democratic vote total across all precincts, according to the data from Duke, as well as a comparison of the 2023 proposed maps and the final maps used in the 2022 election by court-ordered redraw.
+
+### NC House
+[N.C. House Bill 898.](https://ncleg.gov/BillLookUp/2023/H898)
+
+|Contest and year | Statewide D vote %| D seats, 2023 map| D seats, 2022 map| Difference|
+|:----------------|------------------:|-----------------:|-----------------:|----------:|
+|g10_uss          |              43.98|                38|                38|          0|
+|g12_gv           |              44.13|                38|                39|         -1|
+|g20_ca           |              46.15|                43|                44|         -1|
+|g16_lg           |              46.59|                46|                47|         -1|
+|g16_uss          |              46.98|                46|                47|         -1|
+|g20_tr           |              47.43|                45|                49|         -4|
+|g08_ca           |              47.90|                43|                43|          0|
+|g16_pr           |              48.02|                49|                52|         -3|
+|g20_ci           |              48.23|                48|                53|         -5|
+|g20_lg           |              48.36|                47|                54|         -7|
+|g12_pr           |              48.92|                44|                48|         -4|
+|g20_uss          |              49.10|                48|                56|         -8|
+|g14_uss          |              49.17|                47|                49|         -2|
+|g20_cl           |              49.18|                48|                56|         -8|
+|g20_pr           |              49.32|                50|                59|         -9|
+|g08_cl           |              49.34|                48|                49|         -1|
+|g12_lg           |              49.88|                51|                53|         -2|
+|g16_gv           |              50.05|                49|                54|         -5|
+|g08_pr           |              50.11|                47|                50|         -3|
+|g20_ag           |              50.13|                49|                59|        -10|
+|g16_ag           |              50.20|                49|                53|         -4|
+|g20_ad           |              50.88|                52|                62|        -10|
+|g20_sst          |              51.16|                51|                61|        -10|
+|g08_gv           |              51.70|                62|                62|          0|
+|g12_ci           |              51.82|                55|                57|         -2|
+|g20_gv           |              52.29|                55|                64|         -9|
+|g08_lg           |              52.65|                62|                65|         -3|
+|g08_ad           |              53.52|                65|                66|         -1|
+|g08_ci           |              53.57|                62|                65|         -3|
+|g12_sst          |              53.74|                58|                62|         -4|
+|g08_uss          |              54.33|                64|                70|         -6|
+|g08_ag           |              61.07|                93|                97|         -4|
+
+### NC Senate
+[N.C. Senate Bill 758](https://ncleg.gov/BillLookUp/2023/S758)
+
+|Contest and year | Statewide D vote %| D seats, 2023 map| D seats, 2022 map| Difference|
+|:----------------|------------------:|-----------------:|-----------------:|----------:|
+|g10_uss          |              43.98|                16|                14|          2|
+|g12_gv           |              44.13|                17|                16|          1|
+|g20_ca           |              46.15|                17|                19|         -2|
+|g16_lg           |              46.59|                19|                20|         -1|
+|g16_uss          |              46.98|                19|                20|         -1|
+|g20_tr           |              47.43|                17|                19|         -2|
+|g08_ca           |              47.90|                20|                17|          3|
+|g16_pr           |              48.02|                19|                21|         -2|
+|g20_ci           |              48.23|                18|                20|         -2|
+|g20_lg           |              48.36|                17|                21|         -4|
+|g12_pr           |              48.92|                20|                21|         -1|
+|g20_uss          |              49.10|                18|                22|         -4|
+|g14_uss          |              49.17|                20|                20|          0|
+|g20_cl           |              49.18|                19|                23|         -4|
+|g20_pr           |              49.32|                19|                22|         -3|
+|g08_cl           |              49.34|                23|                21|          2|
+|g12_lg           |              49.88|                23|                22|          1|
+|g16_gv           |              50.05|                19|                23|         -4|
+|g08_pr           |              50.11|                20|                21|         -1|
+|g20_ag           |              50.13|                20|                23|         -3|
+|g16_ag           |              50.20|                19|                23|         -4|
+|g20_ad           |              50.88|                23|                26|         -3|
+|g20_sst          |              51.16|                23|                26|         -3|
+|g08_gv           |              51.70|                24|                28|         -4|
+|g12_ci           |              51.82|                23|                22|          1|
+|g20_gv           |              52.29|                23|                25|         -2|
+|g08_lg           |              52.65|                24|                27|         -3|
+|g08_ad           |              53.52|                25|                27|         -2|
+|g08_ci           |              53.57|                26|                27|         -1|
+|g12_sst          |              53.74|                26|                25|          1|
+|g08_uss          |              54.33|                26|                27|         -1|
+|g08_ag           |              61.07|                40|                42|         -2|
+
+### US House
+[N.C. Senate Bill 756](https://ncleg.gov/BillLookUp/2023/S756)
+
+|Contest and year | Statewide D vote %| D seats, 2023 map| D seats, 2022 map| Difference|
+|:----------------|------------------:|-----------------:|-----------------:|----------:|
+|g10_uss          |              43.98|                 3|                 3|          0|
+|g12_gv           |              44.13|                 3|                 4|         -1|
+|g20_ca           |              46.15|                 3|                 6|         -3|
+|g16_lg           |              46.59|                 3|                 5|         -2|
+|g16_uss          |              46.98|                 3|                 6|         -3|
+|g20_tr           |              47.43|                 3|                 6|         -3|
+|g08_ca           |              47.90|                 3|                 4|         -1|
+|g16_pr           |              48.02|                 3|                 6|         -3|
+|g20_ci           |              48.23|                 3|                 6|         -3|
+|g20_lg           |              48.36|                 3|                 6|         -3|
+|g12_pr           |              48.92|                 3|                 6|         -3|
+|g20_uss          |              49.10|                 3|                 7|         -4|
+|g14_uss          |              49.17|                 3|                 6|         -3|
+|g20_cl           |              49.18|                 3|                 7|         -4|
+|g20_pr           |              49.32|                 3|                 7|         -4|
+|g08_cl           |              49.34|                 4|                 5|         -1|
+|g12_lg           |              49.88|                 4|                 6|         -2|
+|g16_gv           |              50.05|                 3|                 7|         -4|
+|g08_pr           |              50.11|                 3|                 6|         -3|
+|g20_ag           |              50.13|                 3|                 7|         -4|
+|g16_ag           |              50.20|                 3|                 7|         -4|
+|g20_ad           |              50.88|                 3|                 7|         -4|
+|g20_sst          |              51.16|                 3|                 7|         -4|
+|g08_gv           |              51.70|                 8|                10|         -2|
+|g12_ci           |              51.82|                 5|                 9|         -4|
+|g20_gv           |              52.29|                 3|                 7|         -4|
+|g08_lg           |              52.65|                 6|                 9|         -3|
+|g08_ad           |              53.52|                 8|                10|         -2|
+|g08_ci           |              53.57|                 9|                10|         -1|
+|g12_sst          |              53.74|                 6|                 9|         -3|
+|g08_uss          |              54.33|                 9|                10|         -1|
+|g08_ag           |              61.07|                14|                12|          2|
+
+[N.C. Senate Bill 757](https://ncleg.gov/BillLookUp/2023/S757)
+
+|Contest and year | Statewide D vote %| D seats, 2023 map| D seats, 2022 map| Difference|
+|:----------------|------------------:|-----------------:|-----------------:|----------:|
+|g10_uss          |              43.98|                 4|                 3|          1|
+|g12_gv           |              44.13|                 4|                 4|          0|
+|g20_ca           |              46.15|                 3|                 6|         -3|
+|g16_lg           |              46.59|                 4|                 5|         -1|
+|g16_uss          |              46.98|                 4|                 6|         -2|
+|g20_tr           |              47.43|                 4|                 6|         -2|
+|g08_ca           |              47.90|                 4|                 4|          0|
+|g16_pr           |              48.02|                 4|                 6|         -2|
+|g20_ci           |              48.23|                 4|                 6|         -2|
+|g20_lg           |              48.36|                 4|                 6|         -2|
+|g12_pr           |              48.92|                 4|                 6|         -2|
+|g20_uss          |              49.10|                 4|                 7|         -3|
+|g14_uss          |              49.17|                 4|                 6|         -2|
+|g20_cl           |              49.18|                 4|                 7|         -3|
+|g20_pr           |              49.32|                 4|                 7|         -3|
+|g08_cl           |              49.34|                 4|                 5|         -1|
+|g12_lg           |              49.88|                 4|                 6|         -2|
+|g16_gv           |              50.05|                 4|                 7|         -3|
+|g08_pr           |              50.11|                 4|                 6|         -2|
+|g20_ag           |              50.13|                 4|                 7|         -3|
+|g16_ag           |              50.20|                 4|                 7|         -3|
+|g20_ad           |              50.88|                 4|                 7|         -3|
+|g20_sst          |              51.16|                 4|                 7|         -3|
+|g08_gv           |              51.70|                 8|                10|         -2|
+|g12_ci           |              51.82|                 4|                 9|         -5|
+|g20_gv           |              52.29|                 4|                 7|         -3|
+|g08_lg           |              52.65|                 7|                 9|         -2|
+|g08_ad           |              53.52|                 8|                10|         -2|
+|g08_ci           |              53.57|                 8|                10|         -2|
+|g12_sst          |              53.74|                 6|                 9|         -3|
+|g08_uss          |              54.33|                 9|                10|         -1|
+|g08_ag           |              61.07|                14|                12|          2|
+
 ## Analysis of existing maps
 The following tables were generated using precinct-level vote totals for each election contest, mapped to corresponding Census blocks by the Duke Quantifying Gerrymandering team. By using the block assignment file provided by the N.C. General Assembly for each map, we can tally the number of Democrats and Republicans who would be elected using the given district map under the conditions of a specific electoral contest (2020 president, 2016 governor, etc.).
 
 The table includes the statewide Democratic vote total across all precincts, according to the data from Duke, as well as a comparison of both the originally enacted maps in 2021 and the final maps used in the 2022 election by court-ordered redraw.
-
-***NOTE: The results here are PRELIMINARY and are subject to change as additional verification, fact-checking, etc. takes place. If you spot any errors, please contact Tyler Dukes.***
 
 ### NC House
 

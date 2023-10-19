@@ -11,6 +11,7 @@ library(tidycensus)
 library(janitor)
 library(ggplot2)
 library(jsonlite)
+library(googlesheets4)
 
 # set api key for tidycensus
 census_api_key(read_lines('keys/census_api', n_max = 1))
@@ -25,8 +26,18 @@ nc_population_block <- get_decennial(geography = "block",
               state = 'NC',
               variables = "P1_001N", 
               year = 2020,
-              sumfile = "pl") %>% 
-  select(geoid = GEOID, population = value)
+              sumfile = "pl") %>%
+  mutate(county = str_extract(NAME, ', ([A-Za-z ]+ County), North Carolina', 1)) %>% 
+  select(county, geoid = GEOID, population = value)
+
+nc_population_vtd <- get_decennial(geography = "voting district",
+                                   state = 'NC',
+                                   variables = "P1_001N", 
+                                   year = 2020,
+                                   sumfile = "pl") %>%
+  mutate(county = str_extract(NAME, ', ([A-Za-z ]+ County), North Carolina', 1),
+         vtd = str_extract(NAME, '^(.+), [A-Za-z ]+ County,', 1)) %>% 
+  select(county, vtd, geoid = GEOID, population = value)
 
 # readout check of block totals
 cat('...loaded', nrow(nc_population_block), 'total blocks from census data...',
@@ -66,6 +77,22 @@ baf_nc_house21 <-read_csv('../data/baf_nc_house_2021.csv', col_types = cols(.def
 baf_nc_senate21 <-read_csv('../data/baf_nc_senate_2021.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
 
 baf_us_house21 <-read_csv('../data/baf_us_house_2021.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
+
+
+# proposed maps
+baf_nc_house_h898 <- read_csv('../data/proposed/h898_baf.csv', col_types = cols(.default = 'c') ) %>% 
+  clean_names('snake') %>% 
+  select(block = geoid20, district)
+baf_nc_senate_s758 <- read_csv('../data/proposed/s758_baf.csv', col_types = cols(.default = 'c') ) %>% 
+  clean_names('snake') %>% 
+  select(block = geoid20, district)
+
+baf_us_house_s756 <- read_csv('../data/proposed/s756_baf.csv', col_types = cols(.default = 'c') ) %>% 
+  clean_names('snake') %>% 
+  select(block = geoid20, district)
+baf_us_house_s757 <- read_csv('../data/proposed/s757_baf.csv', col_types = cols(.default = 'c') ) %>% 
+  clean_names('snake') %>% 
+  select(block = geoid20, district)
 
 # Function definitions ----------------------------------------------------
 
@@ -150,10 +177,10 @@ genElectionTables <- function(baf, chamber, contest_list, crosswalk = duke_cross
        seats = sum(party_win == 'D'),
        total_dem_votes = sum(dem_votes),
        total_dr_votes = sum(total_votes),
-       swing_majority = 50 - nth(dem_pct, majority),
-       swing_supermajority = 50- nth(dem_pct, supermajority),
+       swing_majority = ifelse(is.na(majority), NA, 50 - nth(dem_pct, majority) ),
+       swing_supermajority = ifelse(is.na(supermajority), NA, 50 - nth(dem_pct, supermajority) ),
       ) %>% 
-      #mutate(dem_pct = round(total_dem_votes/total_dr_votes * 100, 2)) %>% 
+      mutate(dem_pct = round(total_dem_votes/total_dr_votes * 100, 2)) %>% 
       mutate(race_code = race_code, .before = everything())
     
     #assign the contest to a list
@@ -760,3 +787,150 @@ hist_json <- genHistogramData('../data/ensembles/house/mcd_on/statewide_G20_PR.c
   genHistogramJSON() %>% 
   write('../data/json/histogram_g20_pr_house.json')
 
+
+
+# Working with proposed maps ----------------------------------------------
+
+nc_house_tables <- baf_nc_house_h898 %>% genElectionTables('nc_house', all_contests)
+
+nc_senate_tables <- baf_nc_senate_s758 %>% genElectionTables('nc_senate', all_contests)
+
+us_congress1_tables <- baf_us_house_s756 %>% genElectionTables('us_house', all_contests)
+
+us_congress2_tables <- baf_us_house_s757 %>% genElectionTables('us_house', all_contests)
+
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_PR.csv', 'g20_pr', 'us_house', baf_us_house22)
+
+genHistogramChart('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 'g20_pr', 'nc_house', baf_nc_house_h898)
+genHistogramChart('../data/ensembles/house/mcd_on/statewide_G20_GV.csv', 'g20_gv', 'nc_house', baf_nc_house_h898)
+genHistogramChart('../data/ensembles/house/mcd_on/statewide_G20_LG.csv', 'g20_lg', 'nc_house', baf_nc_house_h898)
+genHistogramChart('../data/ensembles/house/mcd_on/statewide_G12_GV.csv', 'g12_gv', 'nc_house', baf_nc_house_h898)
+genHistogramChart('../data/ensembles/house/mcd_on/statewide_G16_PR.csv', 'g16_pr', 'nc_house', baf_nc_house_h898)
+genHistogramChart('../data/ensembles/house/mcd_on/statewide_G08_USS.csv', 'g08_uss', 'nc_house', baf_nc_house_h898)
+
+genHistogramData('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 45, 65)
+genHistogramData('../data/ensembles/house/mcd_on/statewide_G12_GV.csv', 30, 65)
+genHistogramData('../data/ensembles/house/mcd_on/statewide_G16_PR.csv', 30, 65)
+
+genHistogramChart('../data/ensembles/senate/mcd_on/statewide_G20_PR.csv', 'g20_pr', 'nc_senate', baf_nc_senate_s758)
+genHistogramChart('../data/ensembles/senate/mcd_on/statewide_G20_GV.csv', 'g20_gv', 'nc_senate', baf_nc_senate_s758)
+genHistogramChart('../data/ensembles/senate/mcd_on/statewide_G20_LG.csv', 'g20_lg', 'nc_senate', baf_nc_senate_s758)
+
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_PR.csv', 'g20_pr', 'us_house', baf_us_house_s756)
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_GV.csv', 'g20_gv', 'us_house', baf_us_house_s756)
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_LG.csv', 'g20_lg', 'us_house', baf_us_house_s756)
+
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_PR.csv', 'g20_pr', 'us_house', baf_us_house_s757)
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_GV.csv', 'g20_gv', 'us_house', baf_us_house_s757)
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_LG.csv', 'g20_lg', 'us_house', baf_us_house_s757)
+
+#generate proposal map json
+genSwingVotes(baf_nc_senate_s758, 'nc_senate', 'g20_pr', 0.005, 0.05) %>% 
+  left_join(
+    genEnsembleSwing('../data/ensembles/senate/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.05),
+    by = 'race_code'
+  ) %>%
+  mutate(dem_pct = round(total_dem_votes / total_dr_votes * 100, 1),
+         republicans_single = 50 - seats,
+         republicans_ensemble = 50 - hist_mode_dems) %>% 
+  select(dem_pct,
+         democrats_single = seats, republicans_single,
+         democrats_ensemble = hist_mode_dems, republicans_ensemble) %>% 
+  select(dem_pct, contains('_single')) %>% 
+  rename_with(~str_remove(., '_single')) %>% 
+  genSwingJSON() %>% 
+  write('../data/json/responsive_g20_pr_senate_s758.json')
+
+genSwingVotes(baf_nc_house_h898, 'nc_house', 'g20_pr', 0.005, 0.05) %>%
+  left_join(
+    genEnsembleSwing('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.05),
+    by = 'race_code'
+  ) %>%
+  mutate(dem_pct = round(total_dem_votes / total_dr_votes * 100, 1),
+         republicans_single = 120 - seats,
+         republicans_ensemble = 120 - hist_mode_dems) %>% 
+  select(dem_pct,
+         democrats_single = seats, republicans_single,
+         democrats_ensemble = hist_mode_dems, republicans_ensemble) %>% 
+  select(dem_pct, contains('_single')) %>% 
+  rename_with(~str_remove(., '_single')) %>% 
+  genSwingJSON() %>% 
+  write('../data/json/responsive_g20_pr_house_h898.json')
+
+#comparison tables
+#nc house
+nc_house_results <- baf_nc_house_h898 %>% 
+  genElectionTables('nc_house', all_contests) %>% 
+  mutate(dems_2023 = seats) %>% 
+  left_join(
+    baf_nc_house22 %>% 
+      genElectionTables('nc_house', all_contests) %>% 
+      select(race_code, dems_2022 = seats),
+    by = 'race_code'
+  ) %>% 
+  arrange(dem_pct) %>% 
+  mutate(Difference = dems_2023 - dems_2022)
+
+#nc senate
+nc_senate_results <- baf_nc_senate_s758 %>% 
+  genElectionTables('nc_senate', all_contests) %>% 
+  mutate(dems_2023 = seats) %>% 
+  left_join(
+    baf_nc_senate22 %>% 
+      genElectionTables('nc_senate', all_contests) %>% 
+      select(race_code, dems_2022 = seats),
+    by = 'race_code'
+  ) %>% 
+  arrange(dem_pct) %>% 
+  mutate(Difference = dems_2023 - dems_2022)
+
+#us house/congress
+us_house_results756 <- baf_us_house_s756 %>% 
+  genElectionTables('us_house', all_contests) %>% 
+  mutate(dems_2023 = seats) %>% 
+  left_join(
+    baf_us_house22 %>% 
+      genElectionTables('us_house', all_contests) %>% 
+      select(race_code, dems_2022 = seats),
+    by = 'race_code'
+  ) %>% 
+  arrange(dem_pct) %>% 
+  mutate(Difference =  dems_2023 - dems_2022)
+
+us_house_results757 <- baf_us_house_s757 %>% 
+  genElectionTables('us_house', all_contests) %>% 
+  mutate(dems_2023 = seats) %>% 
+  left_join(
+    baf_us_house22 %>% 
+      genElectionTables('us_house', all_contests) %>% 
+      select(race_code, dems_2022 = seats),
+    by = 'race_code'
+  ) %>% 
+  arrange(dem_pct) %>% 
+  mutate(Difference = dems_2023 - dems_2022)
+
+
+
+nc_house_results %>% 
+  select('Contest and year' = race_code, 'Statewide D vote %' = dem_pct,
+         'D seats, 2023 map' = dems_2023, 'D seats, 2022 map' = dems_2022, Difference) %>%
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+nc_senate_results %>% 
+  select('Contest and year' = race_code, 'Statewide D vote %' = dem_pct,
+         'D seats, 2023 map' = dems_2023, 'D seats, 2022 map' = dems_2022, Difference) %>%
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+us_house_results756 %>% 
+  select('Contest and year' = race_code, 'Statewide D vote %' = dem_pct,
+         'D seats, 2023 map' = dems_2023, 'D seats, 2022 map' = dems_2022, Difference) %>%
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+us_house_results757 %>% 
+  select('Contest and year' = race_code, 'Statewide D vote %' = dem_pct,
+         'D seats, 2023 map' = dems_2023, 'D seats, 2022 map' = dems_2022, Difference) %>%
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
