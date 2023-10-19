@@ -48,7 +48,7 @@ The table includes the statewide Democratic vote total across all precincts, acc
 |g08_uss          |              54.33|                64|                70|         -6|
 |g08_ag           |              61.07|                93|                97|         -4|
 
-Compared to the ensemble.
+We can also compare the simulated performance of the maps to an "ensemble" of 100,000 maps created by the Duke Quantifying Gerrymandering team. By counting how many Republicans or Democrats are elected using each map and in each election, we can see how often a given proposal lines up with what we'd expect from our collection of tens of thousands of maps.
 
 ![Proposed NC House map under various election conditions compared to the Duke ensemble](https://github.com/mtdukes/redistricting2023/blob/main/charts/gifs/nc_house.gif)
 
