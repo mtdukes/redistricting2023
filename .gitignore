@@ -6,3 +6,4 @@ monster/keys/
 .DS_Store
 .Rproj.user
 .Rhistory
+unused_code.R
