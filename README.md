@@ -18,6 +18,8 @@ For additional reference information and data dictionaries, see the [technical r
 
 Tracking stories from The N&O and The Charlotte Observer on 2023 redistricting in North Carolina.
 
+* [Congressional map predicted to gain 3 GOP seats moves forward in NC legislature](https://www.newsobserver.com/news/politics-government/article280879883.html) // Kyle Ingram // Oct. 23, 2023
+* [N&O analysis confirms aggressive gerrymandering in NC political maps](https://www.newsobserver.com/news/politics-government/article280259464.html) // Tyler Dukes // Oct. 23, 2023
 * [Mecklenburg Democrat says ‘blatantly rigged’ redistricting may force her to move](https://www.newsobserver.com/news/politics-government/article280795615.html) // Mary Ramsey // Oct. 20, 2023
 * [The Triangle’s swing district would be eliminated in GOP congressional maps](https://www.newsobserver.com/news/politics-government/article280695505.html) // Avi Bajpai // Oct. 19, 2023
 * [Democrat says maps that ‘take a sledgehammer to Wake County’ may force her to move](https://www.newsobserver.com/news/politics-government/article280744220.html) // Avi Bajpai // Oct. 19, 2023
