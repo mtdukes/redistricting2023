@@ -267,11 +267,4 @@ Under the conditions of this election, the analysis shows Democrats would need a
 * [2021 N.C. Senate analysis by Duke](https://sites.duke.edu/quantifyinggerrymandering/files/2021/11/senateNCGAReport_comparison.pdf#page=3)
 * [2021 N.C. House analysis by Duke](https://sites.duke.edu/quantifyinggerrymandering/files/2021/11/houseNCGAReport_Comparison.pdf#page=3)
 * [2021 N.C. Congressional analysis by Duke](https://sites.duke.edu/quantifyinggerrymandering/files/2021/11/congressionalReport_Comparison.pdf#page=2)
-
-## Quick reference
-
-**Blocks:** 236,638
-
-**Population:** 10,439,388
-
-
+* [2023 map proposal analysis](https://sites.duke.edu/quantifyinggerrymandering/2023/10/20/newly-proposed-nc-maps-are-more-gerrymandered-and-less-responsive-than-maps-struck-down-in-2021/)
