@@ -51,9 +51,9 @@ all_contests <- c('g08_pr', 'g08_uss','g08_ci',
 # Load block assignment files ---------------------------------------------
 
 # 2022 maps (used in election)
-baf_nc_house22 <-read_csv('../baf/baf_nc_house_2022.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
-baf_nc_senate22 <-read_csv('../baf/baf_nc_senate_2022.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
-baf_us_house22 <-read_csv('../baf/baf_us_house_2022.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
+baf_nc_house22 <- read_csv('../baf/baf_nc_house_2022.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
+baf_nc_senate22 <- read_csv('../baf/baf_nc_senate_2022.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
+baf_us_house22 <- read_csv('../baf/baf_us_house_2022.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
 
 # 2021 maps (overturned)
 baf_nc_house21 <-read_csv('../baf/baf_nc_house_2021.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
@@ -67,12 +67,19 @@ baf_nc_house_h898 <- read_csv('../baf/h898_baf.csv', col_types = cols(.default =
 baf_nc_senate_s758 <- read_csv('../baf/s758_baf.csv', col_types = cols(.default = 'c') ) %>% 
   clean_names('snake') %>% 
   select(block = geoid20, district)
+### NOT ENACTED
 baf_us_house_s756 <- read_csv('../baf/s756_baf.csv', col_types = cols(.default = 'c') ) %>% 
   clean_names('snake') %>% 
   select(block = geoid20, district)
+###
 baf_us_house_s757 <- read_csv('../baf/s757_baf.csv', col_types = cols(.default = 'c') ) %>% 
   clean_names('snake') %>% 
   select(block = geoid20, district)
+
+# enacted maps
+baf_nc_house_h898_ed3 <- read_csv('../baf/baf_h898_ed3.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
+baf_nc_senate_s758_ed2 <- read_csv('../baf/baf_s758_ed2.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
+baf_us_house_s757_ed2 <- read_csv('../baf/baf_s757_ed2.csv', col_types = cols(.default = 'c') ) %>% clean_names('snake')
 
 # Function definitions ----------------------------------------------------
 
@@ -640,6 +647,108 @@ us_house757_table <- baf_us_house_s757 %>%                                      
          diff_ensemble = dems_2023 - ensemble_mode)
 
 
+# Rerunning final tables for enacted maps ---------------------------------
+
+# NC HOUSE - H898 - 3RD EDITION, ENACTED
+nc_house_table <- baf_nc_house_h898_ed3 %>%                                               # <- CHANGE baf HERE
+  genElectionTables('nc_house', all_contests) %>%                                         # <- CHANGE chamber HERE
+  select(race_code, dem_pct, dems_2023_enacted = seats) %>% 
+  left_join(
+    baf_nc_house_h898 %>%                                                                 # <- CHANGE baf HERE
+      genElectionTables('nc_house', all_contests) %>%                                     # <- CHANGE chamber HERE
+      select(race_code, dems_2023_filed = seats),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    baf_nc_house22 %>%                                                                    # <- CHANGE baf HERE
+      genElectionTables('nc_house', all_contests) %>%                                     # <- CHANGE chamber HERE
+      select(race_code, dems_2022 = seats),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    genEnsembleModes(all_contests, '../data/ensembles/house/mcd_on/statewide_') %>%       # <- CHANGE ensemble path HERE
+      select(race_code, ensemble_mode = dems_elected, mode_pct = hist_pct),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    baf_nc_house_h898_ed3 %>%                                                             # <- CHANGE baf HERE
+      genElectionTables('nc_house', all_contests) %>%                                     # <- CHANGE chamber HERE
+      genEnsembleMatches('../data/ensembles/house/mcd_on/statewide_') %>%                 # <- CHANGE ensemble path HERE
+      select(race_code, map_count, hist_pct),
+    by = 'race_code'
+  ) %>% 
+  mutate(race_code_parsed = parseRaceCode(race_code),
+         diff_enacted = dems_2023_enacted - dems_2023_filed,
+         diff_2022 = dems_2023_enacted - dems_2022,
+         diff_ensemble = dems_2023_enacted - ensemble_mode)
+
+
+# NC SENATE - S758 - 3RD EDITION, ENACTED
+nc_senate_table <- baf_nc_senate_s758_ed2 %>%                                              # <- CHANGE baf HERE
+  genElectionTables('nc_senate', all_contests) %>%                                         # <- CHANGE chamber HERE
+  select(race_code, dem_pct, dems_2023_enacted = seats) %>%
+  left_join(
+    baf_nc_senate_s758 %>%                                                                 # <- CHANGE baf HERE
+      genElectionTables('nc_senate', all_contests) %>%                                     # <- CHANGE chamber HERE
+      select(race_code, dems_2023_filed = seats),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    baf_nc_senate22 %>%                                                                    # <- CHANGE baf HERE
+      genElectionTables('nc_senate', all_contests) %>%                                     # <- CHANGE chamber HERE
+      select(race_code, dems_2022 = seats),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    genEnsembleModes(all_contests, '../data/ensembles/senate/mcd_on/statewide_') %>%       # <- CHANGE ensemble path HERE
+      select(race_code, ensemble_mode = dems_elected, mode_pct = hist_pct),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    baf_nc_senate_s758_ed2 %>%                                                             # <- CHANGE baf HERE
+      genElectionTables('nc_senate', all_contests) %>%                                     # <- CHANGE chamber HERE
+      genEnsembleMatches('../data/ensembles/senate/mcd_on/statewide_') %>%                # <- CHANGE ensemble path HERE
+      select(race_code, map_count, hist_pct),
+    by = 'race_code'
+  ) %>% 
+  mutate(race_code_parsed = parseRaceCode(race_code),
+         diff_enacted = dems_2023_enacted - dems_2023_filed,
+         diff_2022 = dems_2023_enacted - dems_2022,
+         diff_ensemble = dems_2023_enacted - ensemble_mode)
+
+# US HOUSE - S757 - 2ND EDITION, ENACTED
+us_house757_table <- baf_us_house_s757_ed2 %>%                                                               # <- CHANGE baf HERE
+  genElectionTables('us_house', all_contests) %>%                                                            # <- CHANGE chamber HERE
+  select(race_code, dem_pct, dems_2023_enacted = seats) %>%
+  left_join(
+    baf_us_house_s757 %>%                                                                                    # <- CHANGE baf HERE
+      genElectionTables('us_house', all_contests) %>%                                                        # <- CHANGE chamber HERE
+      select(race_code, dems_2023_filed = seats),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    baf_us_house22 %>%                                                                                       # <- CHANGE baf HERE
+      genElectionTables('us_house', all_contests) %>%                                                        # <- CHANGE chamber HERE
+      select(race_code, dems_2022 = seats),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    genEnsembleModes(all_contests, '../data/ensembles/congressional/atlas_measureID12_marginals_') %>%      # <- CHANGE ensemble path HERE
+      select(race_code, ensemble_mode = dems_elected, mode_pct = hist_pct),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    baf_us_house_s757_ed2 %>%                                                                                # <- CHANGE baf HERE
+      genElectionTables('us_house', all_contests) %>%                                                        # <- CHANGE chamber HERE
+      genEnsembleMatches('../data/ensembles/congressional/atlas_measureID12_marginals_') %>%                 # <- CHANGE ensemble path HERE
+      select(race_code, map_count, hist_pct),
+    by = 'race_code'
+  ) %>% 
+  mutate(race_code_parsed = parseRaceCode(race_code),
+         diff_enacted = dems_2023_enacted - dems_2023_filed,
+         diff_2022 = dems_2023_enacted - dems_2022,
+         diff_ensemble = dems_2023_enacted - ensemble_mode)
+
 # Run uniform swing analysis ----------------------------------------------
 
 # NC HOUSE - H898
@@ -740,6 +849,131 @@ nc_senate_swing_g20_gv <- genSwingVotes(baf_nc_senate_s758, 'nc_senate', 'g20_gv
                                0, 
                                parse_double(str_extract(race_code,'^.+_.+_(.+)$', 1)) * 100))
 
+# Rerun uniform swing analysis for enacted maps ---------------------------
+
+# NC HOUSE - H898
+# 2020 president
+nc_house_swing_g20_pr <- genSwingVotes(baf_nc_house_h898_ed3, 'nc_house', 'g20_pr', 0.005, 0.05) %>%     # <- CHANGE baf, chamber, race_code HERE
+  select(race_code, dem_pct, dems_2023_enacted = seats, 
+         swg_maj2023_enacted = swing_majority, swg_supermaj_2023_enacted = swing_supermajority) %>%
+  left_join(
+    genSwingVotes(baf_nc_house_h898, 'nc_house', 'g20_pr', 0.005, 0.05) %>%                              # <- CHANGE baf, chamber, race_code HERE
+      select(race_code, dems_2023_filed = seats, 
+             swg_maj2023_filed = swing_majority, swg_supermaj_2023_filed = swing_supermajority),
+    by = 'race_code'
+  ) %>% 
+  left_join(
+    genSwingVotes(baf_nc_house21, 'nc_house', 'g20_pr', 0.005, 0.05) %>%                                 # <- CHANGE baf, chamber, race_code HERE
+      select(race_code, dems_2021 = seats, 
+             swg_maj2021 = swing_majority, swg_supermaj_2021 = swing_supermajority),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    genSwingVotes(baf_nc_house22, 'nc_house', 'g20_pr', 0.005, 0.05) %>%                                 # <- CHANGE baf, chamber, race_code HERE
+      select(race_code, dems_2022 = seats, 
+             swg_maj2022 = swing_majority, swg_supermaj_2022 = swing_supermajority),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    genEnsembleSwing('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.05),      # <- CHANGE ensemble, race_code HERE
+    by = 'race_code'
+  ) %>%
+  mutate(swing_value = if_else(is.na(str_extract(race_code,'^.+_.+_(.+)$', 1)), 
+                               0, 
+                               parse_double(str_extract(race_code,'^.+_.+_(.+)$', 1)) * 100))
+
+# 2020 governor
+nc_house_swing_g20_gv <- genSwingVotes(baf_nc_house_h898_ed3, 'nc_house', 'g20_gv', 0.005, 0.05) %>%     # <- CHANGE baf, chamber, race_code HERE
+  select(race_code, dem_pct, dems_2023_enacted = seats, 
+         swg_maj2023_enacted = swing_majority, swg_supermaj_2023_enacted = swing_supermajority) %>%
+  left_join(
+    genSwingVotes(baf_nc_house_h898, 'nc_house', 'g20_gv', 0.005, 0.05) %>%                              # <- CHANGE baf, chamber, race_code HERE
+      select(race_code, dems_2023_filed = seats, 
+             swg_maj2023_filed = swing_majority, swg_supermaj_2023_filed = swing_supermajority),
+    by = 'race_code'
+  ) %>% 
+  left_join(
+    genSwingVotes(baf_nc_house21, 'nc_house', 'g20_gv', 0.005, 0.05) %>%                                 # <- CHANGE baf, chamber, race_code HERE
+      select(race_code, dems_2021 = seats, 
+             swg_maj2021 = swing_majority, swg_supermaj_2021 = swing_supermajority),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    genSwingVotes(baf_nc_house22, 'nc_house', 'g20_gv', 0.005, 0.05) %>%                                 # <- CHANGE baf, chamber, race_code HERE
+      select(race_code, dems_2022 = seats, 
+             swg_maj2022 = swing_majority, swg_supermaj_2022 = swing_supermajority),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    genEnsembleSwing('../data/ensembles/house/mcd_on/statewide_G20_GV.csv', 'g20_gv', 0.005, 0.05),      # <- CHANGE ensemble, race_code HERE
+    by = 'race_code'
+  ) %>%
+  mutate(swing_value = if_else(is.na(str_extract(race_code,'^.+_.+_(.+)$', 1)), 
+                               0, 
+                               parse_double(str_extract(race_code,'^.+_.+_(.+)$', 1)) * 100))
+  
+# NC SENATE - S758
+# 2020 president
+nc_senate_swing_g20_pr <- genSwingVotes(baf_nc_senate_s758_ed2, 'nc_senate', 'g20_pr', 0.005, 0.05) %>%     # <- CHANGE baf, chamber, race_code HERE
+  select(race_code, dem_pct, dems_2023_enacted = seats, 
+         swg_maj2023_enacted = swing_majority, swg_supermaj_2023_enacted = swing_supermajority) %>%
+  left_join(
+    genSwingVotes(baf_nc_senate_s758, 'nc_senate', 'g20_pr', 0.005, 0.05) %>%                               # <- CHANGE baf, chamber, race_code HERE
+      select(race_code, dems_2023_filed = seats, 
+             swg_maj2023_filed = swing_majority, swg_supermaj_2023_filed = swing_supermajority),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    genSwingVotes(baf_nc_senate21, 'nc_senate', 'g20_pr', 0.005, 0.05) %>%                                  # <- CHANGE baf, chamber, race_code HERE
+      select(race_code, dems_2021 = seats, 
+             swg_maj2021 = swing_majority, swg_supermaj_2021 = swing_supermajority),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    genSwingVotes(baf_nc_senate22, 'nc_senate', 'g20_pr', 0.005, 0.05) %>%                                  # <- CHANGE baf, chamber, race_code HERE
+      select(race_code, dems_2022 = seats, 
+             swg_maj2022 = swing_majority, swg_supermaj_2022 = swing_supermajority),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    genEnsembleSwing('../data/ensembles/senate/mcd_on/statewide_G20_PR.csv', 'g20_pr', 0.005, 0.05),        # <- CHANGE ensemble HERE
+    by = 'race_code'
+  ) %>%
+  mutate(swing_value = if_else(is.na(str_extract(race_code,'^.+_.+_(.+)$', 1)), 
+                               0, 
+                               parse_double(str_extract(race_code,'^.+_.+_(.+)$', 1)) * 100))
+
+# 2020 governor
+nc_senate_swing_g20_gv <- genSwingVotes(baf_nc_senate_s758_ed2, 'nc_senate', 'g20_gv', 0.005, 0.05) %>%     # <- CHANGE baf, chamber, race_code HERE
+  select(race_code, dem_pct, dems_2023_enacted = seats, 
+         swg_maj2023_enacted = swing_majority, swg_supermaj_2023_enacted = swing_supermajority) %>%
+  left_join(
+    genSwingVotes(baf_nc_senate_s758, 'nc_senate', 'g20_gv', 0.005, 0.05) %>%                               # <- CHANGE baf, chamber, race_code HERE
+      select(race_code, dems_2023_filed = seats, 
+             swg_maj2023_filed = swing_majority, swg_supermaj_2023_filed = swing_supermajority),
+    by = 'race_code'
+  ) %>% 
+  left_join(
+    genSwingVotes(baf_nc_senate21, 'nc_senate', 'g20_gv', 0.005, 0.05) %>%                                  # <- CHANGE baf, chamber, race_code HERE
+      select(race_code, dems_2021 = seats, 
+             swg_maj2021 = swing_majority, swg_supermaj_2021 = swing_supermajority),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    genSwingVotes(baf_nc_senate22, 'nc_senate', 'g20_gv', 0.005, 0.05) %>%                                  # <- CHANGE baf, chamber, race_code HERE
+      select(race_code, dems_2022 = seats, 
+             swg_maj2022 = swing_majority, swg_supermaj_2022 = swing_supermajority),
+    by = 'race_code'
+  ) %>%
+  left_join(
+    genEnsembleSwing('../data/ensembles/senate/mcd_on/statewide_G20_GV.csv', 'g20_gv', 0.005, 0.05),        # <- CHANGE ensemble HERE
+    by = 'race_code'
+    ) %>%
+  mutate(swing_value = if_else(is.na(str_extract(race_code,'^.+_.+_(.+)$', 1)), 
+                               0, 
+                               parse_double(str_extract(race_code,'^.+_.+_(.+)$', 1)) * 100))
+  
+
 # Fact checking -----------------------------------------------------------
 
 #check the breakdown for major 2020 races
@@ -747,26 +981,27 @@ nc_house_table %>% filter(race_code %in% c('g20_pr', 'g20_uss', 'g20_gv', 'g20_l
 
 nc_senate_table %>% filter(race_code %in% c('g20_pr', 'g20_uss', 'g20_gv', 'g20_lg', 'g20_ag'))
 
-us_house756_table %>% filter(race_code %in% c('g20_pr', 'g20_uss', 'g20_gv', 'g20_lg', 'g20_ag'))
-
 us_house757_table %>% filter(race_code %in% c('g20_pr', 'g20_uss', 'g20_gv', 'g20_lg', 'g20_ag'))
+
+#NOT ENACTED
+us_house756_table %>% filter(race_code %in% c('g20_pr', 'g20_uss', 'g20_gv', 'g20_lg', 'g20_ag'))
 
 #quickly find the swing values for the majority for the proposed maps
 nc_house_swing_g20_pr %>% 
   filter(race_code == 'g20_pr') %>% 
-  select(swg_maj2023)
+  select(swg_maj2023_enacted)
 
 nc_house_swing_g20_gv %>% 
   filter(race_code == 'g20_gv') %>% 
-  select(swg_maj2023)
+  select(swg_maj2023_enacted)
 
 nc_senate_swing_g20_pr %>% 
   filter(race_code == 'g20_pr') %>% 
-  select(swg_maj2023)
+  select(swg_maj2023_enacted)
 
 nc_senate_swing_g20_gv %>% 
   filter(race_code == 'g20_gv') %>% 
-  select(swg_maj2023)
+  select(swg_maj2023_enacted)
 
 # Creating histogram graphics ---------------------------------------------
 
@@ -870,11 +1105,89 @@ c('../charts/us_house_s757_g20_lg.png',
   image_animate(fps = 0.5) %>% 
   image_write('../charts/gifs/us_house_s757.gif')
 
+# Creating final histogram graphics ---------------------------------------
+
+#NC HOUSE - H898, 3RD EDITION - ENACTED
+#create and save histograms to the repo
+genHistogramChart('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 'g20_pr', 'nc_house', baf_nc_house_h898_ed3) %>%
+  ggsave('../charts/nc_house_ed3_g20_pr.png', plot = ., bg = 'white', width = 3200, height = 1800, units = 'px')
+genHistogramChart('../data/ensembles/house/mcd_on/statewide_G20_USS.csv', 'g20_uss', 'nc_house', baf_nc_house_h898_ed3) %>%
+  ggsave('../charts/nc_house_ed3_g20_uss.png', plot = ., bg = 'white', width = 3200, height = 1800, units = 'px')
+genHistogramChart('../data/ensembles/house/mcd_on/statewide_G20_GV.csv', 'g20_gv', 'nc_house', baf_nc_house_h898_ed3) %>%
+  ggsave('../charts/nc_house_ed3_g20_gv.png', plot = ., bg = 'white', width = 3200, height = 1800, units = 'px')
+genHistogramChart('../data/ensembles/house/mcd_on/statewide_G20_LG.csv', 'g20_lg', 'nc_house', baf_nc_house_h898_ed3) %>%
+  ggsave('../charts/nc_house_ed3_g20_lg.png', plot = ., bg = 'white', width = 3200, height = 1800, units = 'px')
+genHistogramChart('../data/ensembles/house/mcd_on/statewide_G20_AG.csv', 'g20_ag', 'nc_house', baf_nc_house_h898_ed3) %>%
+  ggsave('../charts/nc_house_ed3_g20_ag.png', plot = ., bg = 'white', width = 3200, height = 1800, units = 'px')
+
+#create and save a gif of the histograms to the repo
+c('../charts/nc_house_ed3_g20_lg.png',
+  '../charts/nc_house_ed3_g20_uss.png',
+  '../charts/nc_house_ed3_g20_ag.png',
+  '../charts/nc_house_ed3_g20_pr.png',
+  '../charts/nc_house_ed3_g20_gv.png'
+) %>% 
+  lapply(., image_read) %>% 
+  image_join() %>% 
+  image_animate(fps = 0.5) %>% 
+  image_write('../charts/gifs/nc_house_h898_ed3.gif')
+
+# NC SENATE - S758, 2ND EDITION - ENACTED
+#create and save histograms to the repo
+genHistogramChart('../data/ensembles/senate/mcd_on/statewide_G20_PR.csv', 'g20_pr', 'nc_senate', baf_nc_senate_s758_ed2) %>%
+  ggsave('../charts/nc_senate_ed2_g20_pr.png', plot = ., bg = 'white', width = 3200, height = 1800, units = 'px')
+genHistogramChart('../data/ensembles/senate/mcd_on/statewide_G20_USS.csv', 'g20_uss', 'nc_senate', baf_nc_senate_s758_ed2) %>%
+  ggsave('../charts/nc_senate_ed2_g20_uss.png', plot = ., bg = 'white', width = 3200, height = 1800, units = 'px')
+genHistogramChart('../data/ensembles/senate/mcd_on/statewide_G20_GV.csv', 'g20_gv', 'nc_senate', baf_nc_senate_s758_ed2) %>%
+  ggsave('../charts/nc_senate_ed2_g20_gv.png', plot = ., bg = 'white', width = 3200, height = 1800, units = 'px')
+genHistogramChart('../data/ensembles/senate/mcd_on/statewide_G20_LG.csv', 'g20_lg', 'nc_senate', baf_nc_senate_s758_ed2) %>%
+  ggsave('../charts/nc_senate_ed2_g20_lg.png', plot = ., bg = 'white', width = 3200, height = 1800, units = 'px')
+genHistogramChart('../data/ensembles/senate/mcd_on/statewide_G20_AG.csv', 'g20_ag', 'nc_senate', baf_nc_senate_s758_ed2) %>%
+  ggsave('../charts/nc_senate_ed2_g20_ag.png', plot = ., bg = 'white', width = 3200, height = 1800, units = 'px')
+
+#create and save a gif of the histograms to the repo
+c('../charts/nc_senate_ed2_g20_lg.png',
+  '../charts/nc_senate_ed2_g20_uss.png',
+  '../charts/nc_senate_ed2_g20_pr.png',
+  '../charts/nc_senate_ed2_g20_ag.png',
+  '../charts/nc_senate_ed2_g20_gv.png'
+) %>% 
+  lapply(., image_read) %>% 
+  image_join() %>% 
+  image_animate(fps = 0.5) %>% 
+  image_write('../charts/gifs/nc_senate_s758_ed2.gif')
+
+# US HOUSE - S757, 2ND EDITION - ENACTED
+#create and save histograms to the repo
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_PR.csv', 'g20_pr', 'us_house', baf_us_house_s757_ed2) %>%
+  ggsave('../charts/us_house_s757_ed2_g20_pr.png', plot = ., bg = 'white', width = 3200, height = 1800, units = 'px')
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_USS.csv', 'g20_uss', 'us_house', baf_us_house_s757_ed2) %>%
+  ggsave('../charts/us_house_s757_ed2_g20_uss.png', plot = ., bg = 'white', width = 3200, height = 1800, units = 'px')
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_GV.csv', 'g20_gv', 'us_house', baf_us_house_s757_ed2) %>%
+  ggsave('../charts/us_house_s757_ed2_g20_gv.png', plot = ., bg = 'white', width = 3200, height = 1800, units = 'px')
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_LG.csv', 'g20_lg', 'us_house', baf_us_house_s757_ed2) %>%
+  ggsave('../charts/us_house_s757_ed2_g20_lg.png', plot = ., bg = 'white', width = 3200, height = 1800, units = 'px')
+genHistogramChart('../data/ensembles/congressional/atlas_measureID12_marginals_G20_AG.csv', 'g20_ag', 'us_house', baf_us_house_s757_ed2) %>%
+  ggsave('../charts/us_house_s757_ed2_g20_ag.png', plot = ., bg = 'white', width = 3200, height = 1800, units = 'px')
+
+#create and save a gif of the histograms to the repo
+c('../charts/us_house_s757_ed2_g20_lg.png',
+  '../charts/us_house_s757_ed2_g20_uss.png',
+  '../charts/us_house_s757_ed2_g20_pr.png',
+  '../charts/us_house_s757_ed2_g20_ag.png',
+  '../charts/us_house_s757_ed2_g20_gv.png'
+) %>% 
+  lapply(., image_read) %>% 
+  image_join() %>% 
+  image_animate(fps = 0.5) %>% 
+  image_write('../charts/gifs/us_house_s757_ed2.gif')
+
 # Clean and copy for GitHub -----------------------------------------------
 
 # NC HOUSE - H898
 # histogram comparison
-nc_house_table %>% 
+nc_house_table %>%
+  mutate(dem_pct = round(dem_pct, 1)) %>% 
   arrange(dem_pct) %>%
   select(
     'Contest & year' = race_code_parsed,
@@ -990,6 +1303,129 @@ us_house757_table %>%
     'D seats, 2022 map' = dems_2022,
     'D seats, ensemble mode' = ensemble_mode,
     '# of ensemble matches' = map_count,
+    'Difference, 2022' = diff_2022,
+    'Difference, ensemble' = diff_ensemble
+  ) %>%
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+
+# Clean and copy final maps for GitHub ------------------------------------
+
+# NC HOUSE - H898
+# histogram comparison
+nc_house_table %>%
+  mutate(dem_pct = round(dem_pct, 1)) %>% 
+  arrange(dem_pct) %>%
+  select(
+    'Contest & year' = race_code_parsed,
+    'Statewide D vote %' = dem_pct,
+    'D seats, enacted map' = dems_2023_enacted,
+    'D seats, proposed map' = dems_2023_filed,
+    'D seats, 2022 map' = dems_2022,
+    'D seats, ensemble mode' = ensemble_mode,
+    '# of ensemble matches' = map_count,
+    'Difference, proposed' = diff_enacted,
+    'Difference, 2022' = diff_2022,
+    'Difference, ensemble' = diff_ensemble
+  ) %>%
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+#swing analysis for 2020 president - ENACTED
+nc_house_swing_g20_pr %>%
+  mutate(dem_pct = round(dem_pct, 1)) %>% 
+  select(
+    'Swing value' = swing_value,
+    'Statewide D vote %' = dem_pct,
+    'D seats, enacted map' = dems_2023_enacted,
+    'D seats, proposed map' = dems_2023_filed,
+    'D seats, 2022 map' = dems_2022,
+    'D seats, ensemble mode' = hist_mode_dems,
+    '% of ensemble, mode' = hist_pct
+  ) %>%
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+#swing analysis for 2020 governor - ENACTED
+nc_house_swing_g20_gv %>%
+  mutate(dem_pct = round(dem_pct, 1)) %>% 
+  select(
+    'Swing value' = swing_value,
+    'Statewide D vote %' = dem_pct,
+    'D seats, enacted map' = dems_2023_enacted,
+    'D seats, proposed map' = dems_2023_filed,
+    'D seats, 2022 map' = dems_2022,
+    'D seats, ensemble mode' = hist_mode_dems,
+    '% of ensemble, mode' = hist_pct
+  ) %>%
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+# NC SENATE - S758
+# histogram comparison
+nc_senate_table %>%
+  mutate(dem_pct = round(dem_pct, 1)) %>% 
+  arrange(dem_pct) %>%
+  select(
+    'Contest & year' = race_code_parsed,
+    'Statewide D vote %' = dem_pct,
+    'D seats, enacted map' = dems_2023_enacted,
+    'D seats, proposed map' = dems_2023_filed,
+    'D seats, 2022 map' = dems_2022,
+    'D seats, ensemble mode' = ensemble_mode,
+    '# of ensemble matches' = map_count,
+    'Difference, proposed' = diff_enacted,
+    'Difference, 2022' = diff_2022,
+    'Difference, ensemble' = diff_ensemble
+  ) %>%
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+#swing analysis for 2020 president - ENACTED
+nc_senate_swing_g20_pr %>%
+  mutate(dem_pct = round(dem_pct, 1)) %>% 
+  select(
+    'Swing value' = swing_value,
+    'Statewide D vote %' = dem_pct,
+    'D seats, enacted map' = dems_2023_enacted,
+    'D seats, proposed map' = dems_2023_filed,
+    'D seats, 2022 map' = dems_2022,
+    'D seats, ensemble mode' = hist_mode_dems,
+    '% of ensemble, mode' = hist_pct
+  ) %>%
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+#swing analysis for 2020 governor - ENACTED
+nc_senate_swing_g20_gv %>%
+  mutate(dem_pct = round(dem_pct, 1)) %>% 
+  select(
+    'Swing value' = swing_value,
+    'Statewide D vote %' = dem_pct,
+    'D seats, enacted map' = dems_2023_enacted,
+    'D seats, proposed map' = dems_2023_filed,
+    'D seats, 2022 map' = dems_2022,
+    'D seats, ensemble mode' = hist_mode_dems,
+    '% of ensemble, mode' = hist_pct
+  ) %>%
+  knitr::kable('pipe') %>% 
+  clipr::write_clip()
+
+# US HOUSE - S757
+# histogram comparison
+us_house757_table %>%
+  mutate(dem_pct = round(dem_pct, 1)) %>% 
+  arrange(dem_pct) %>%
+  select(
+    'Contest & year' = race_code_parsed,
+    'Statewide D vote %' = dem_pct,
+    'D seats, enacted map' = dems_2023_enacted,
+    'D seats, proposed map' = dems_2023_filed,
+    'D seats, 2022 map' = dems_2022,
+    'D seats, ensemble mode' = ensemble_mode,
+    '# of ensemble matches' = map_count,
+    'Difference, proposed' = diff_enacted,
     'Difference, 2022' = diff_2022,
     'Difference, ensemble' = diff_ensemble
   ) %>%
