@@ -20,7 +20,8 @@ For additional reference information and data dictionaries, see the [technical r
 
 Tracking stories from The N&O and The Charlotte Observer on 2023 redistricting in North Carolina.
 
-* [Democrats must prove racial gerrymandering to fight new GOP maps. How do they do it?](https://www.newsobserver.com/news/politics-government/article280903658.html) // Oct. 26, 2023
+* [Democrats must prove racial gerrymandering to fight new GOP maps. How do they do it?](https://www.newsobserver.com/news/politics-government/article280903658.html) // Kyle Ingram // Oct. 26, 2023
+* [Running in new Wake district: A Democratic senator, and a Republican who sued Tim Moore](https://www.newsobserver.com/news/politics-government/article281007403.html) // Dawn Baumgartner Vaughan // Oct. 26, 2023
 * [Jeff Jackson, a target of GOP maps, announces bid for NC attorney general](https://www.newsobserver.com/news/politics-government/article280959918.html) // Danielle Battaglia // Oct. 26, 2023
 * [North Carolina has new maps for the 2024 elections. What they change and who may run](https://www.newsobserver.com/news/politics-government/article280960213.html) // Dawn Baumgartner Vaughan & Kyle Ingram // Oct. 25, 2023
 * [Mark Walker drops out of NC governor’s race to run for Congress in newly drawn district](https://www.newsobserver.com/news/politics-government/article281002708.html) // Avi Bajpai // Oct. 25, 2023
