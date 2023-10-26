@@ -1489,3 +1489,42 @@ genSwingVotes(baf_nc_senate_s758, 'nc_senate', 'g20_pr', 0.005, 0.1) %>%
   rename_with(~str_remove(., '_ensemble')) %>%
   genSwingJSON() %>% 
   write('../data/json/responsive_g20_pr_senate_ensemble.json')
+
+# Generate data for datawrapper charts ------------------------------------
+
+#NC House, 2020 president
+genHistogramData('../data/ensembles/house/mcd_on/statewide_G20_PR.csv', 45, 70) %>% 
+  mutate(date_map = paste0('19', dems_elected)) %>% 
+  select(dems_elected, date_map, map_count) %>% 
+  clipr::write_clip()
+
+#NC House, 2020 governor
+genHistogramData('../data/ensembles/house/mcd_on/statewide_G20_GV.csv', 45, 70) %>% 
+  mutate(date_map = paste0('19', dems_elected)) %>% 
+  select(dems_elected, date_map, map_count) %>% 
+  clipr::write_clip()
+
+#NC Senate, 2020 president
+genHistogramData('../data/ensembles/senate/mcd_on/statewide_G20_PR.csv', 10, 50) %>% 
+  mutate(date_map = paste0('19', dems_elected)) %>% 
+  select(dems_elected, date_map, map_count) %>% 
+  clipr::write_clip()
+
+#NC Senate, 2020 governor
+genHistogramData('../data/ensembles/senate/mcd_on/statewide_G20_GV.csv', 10, 50) %>% 
+  mutate(date_map = paste0('19', dems_elected)) %>% 
+  select(dems_elected, date_map, map_count) %>% 
+  clipr::write_clip()
+
+#US HOUSE, 2020 president
+genHistogramData('../data/ensembles/congressional/atlas_measureID12_marginals_G20_PR.csv', 0, 14) %>% 
+  mutate(date_map = paste0('19', sprintf("%02d", dems_elected))) %>% 
+  select(dems_elected, date_map, map_count) %>% 
+  clipr::write_clip()
+
+#US HOUSE, 2020 governor
+genHistogramData('../data/ensembles/congressional/atlas_measureID12_marginals_G20_GV.csv', 0, 14) %>% 
+  mutate(date_map = paste0('19', sprintf("%02d", dems_elected))) %>% 
+  select(dems_elected, date_map, map_count) %>% 
+  clipr::write_clip()
+
