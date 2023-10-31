@@ -2,7 +2,7 @@
 
 To analyze the districts enacted by Republican state lawmakers in October 2023 for signs of partisan gerrymandering, The News & Observer used a technique featured prominently in multiple legal challenges to maps across the country, including in North Carolina.
 
-The analysis compares the enacted maps — for [state House](https://ncleg.gov/BillLookUp/2023/H898), [state Senate](https://ncleg.gov/BillLookUp/2023/S758) and [Congress](https://ncleg.gov/BillLookUp/2023/S757) — to a set of 100,000 computer-generated maps created by a team of mathematicians at Duke University led by Jonathan Mattingly. All of the maps in this "ensemble" follow [neutral redistricting criteria](https://webservices.ncleg.gov/ViewDocSiteFile/38467) established by the legislature during the 2021 redistricting process.
+The analysis compares the enacted maps to a set of computer-generated maps — 100,000 each for [state House](https://ncleg.gov/BillLookUp/2023/H898) and [state Senate](https://ncleg.gov/BillLookUp/2023/S758) and 79,997 for [Congress](https://ncleg.gov/BillLookUp/2023/S757) — created by a team of mathematicians at Duke University led by Jonathan Mattingly. All of the maps in this "ensemble" follow [neutral redistricting criteria](https://webservices.ncleg.gov/ViewDocSiteFile/38467) established by the legislature during the 2021 redistricting process.
 
 For each of these maps, the analysis uses precinct-level vote totals from past elections and re-sorts them into the different districts, simulating outcomes under different scenarios. The method doesn't predict how maps will perform in the *future*. Instead, it uses actual election data from *past* races unaffected by gerrymandering – president or governor, for example – where all voters cast ballots for the same set of candidates.
 
@@ -14,7 +14,9 @@ See below for a full breakdown of the findings, methodology and additional infor
 
 For additional reference information and data dictionaries, see the [technical reference readme](https://github.com/mtdukes/redistricting2023/blob/main/technical_reference.md).
 
-**NOTE: The findings below were updated for the maps enacted Oct. 25, 2023, which state lawmakers amended slightly after they were initially filed. [Find the N&O's previous findings for the proposed maps, as initially filed, here.](https://github.com/mtdukes/redistricting2023/blob/main/analysis_of_proposed_maps.md)** 
+**NOTE: The findings below were updated for the maps enacted Oct. 25, 2023, which state lawmakers amended slightly after they were initially filed. [Find the N&O's previous findings for the proposed maps, as initially filed, here.](https://github.com/mtdukes/redistricting2023/blob/main/analysis_of_proposed_maps.md)**
+
+**CORRECTION: A previous version of this readme file incorrectly reported that the Duke team created 100,000 maps for both Congress and the legislature. The team created 100,000 for the state House and state Senate, as well as about 80,000 for the U.S. House. **
 
 ## Ongoing coverage
 
@@ -123,7 +125,7 @@ Under the conditions of the major general elections in 2020 — president, U.S. 
 
 Under the conditions of the major general elections in 2020 — president, U.S. Senate, governor, lt. governor and attorney general — there's a **2 to 3 seat** difference in favor of GOP compared to the maps used in 2022.
 
-Under the conditions of the major general elections in 2020 — president, U.S. Senate, governor, lt. governor and attorney general — the maps enacted by the N.C. General Assembly would elect **1 to 3** more Republicans than expected, based on a collection of 100,000 computer-generated maps provided by the Duke team.
+Under the conditions of the major general elections in 2020 — president, U.S. Senate, governor, lt. governor and attorney general — the maps enacted by the N.C. General Assembly would elect **1 to 3** more Republicans than expected, based on a collection of 79,997 computer-generated maps provided by the Duke team.
 
 |Contest & year                | Statewide D vote %| D seats, enacted map| D seats, proposed map| D seats, 2022 map| D seats, ensemble mode| # of ensemble matches| Difference, proposed| Difference, 2022| Difference, ensemble|
 |:-----------------------------|------------------:|--------------------:|---------------------:|-----------------:|----------------------:|---------------------:|--------------------:|----------------:|--------------------:|
